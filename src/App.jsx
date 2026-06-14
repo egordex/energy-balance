@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from 'react'
 import IdleScreen from './components/IdleScreen'
 import TimerScreen from './components/TimerScreen'
 import SessionForm from './components/SessionForm'
+import ManualSessionForm from './components/ManualSessionForm'
 import Analytics from './components/Analytics'
 
-const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form' }
+const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form', MANUAL: 'manual' }
 
 function NavBar({ page, onNavigate }) {
   return (
@@ -55,8 +56,7 @@ export default function App() {
   }, [view, startTime])
 
   function handleStart() {
-    const now = Date.now()
-    setStartTime(now)
+    setStartTime(Date.now())
     setElapsed(0)
     setView(VIEW.RUNNING)
   }
@@ -65,18 +65,21 @@ export default function App() {
     setView(VIEW.FORM)
   }
 
-  function handleSave(formData) {
-    const session = {
-      id: crypto.randomUUID(),
-      startedAt: new Date(startTime).toISOString(),
-      durationSeconds: elapsed,
-      ...formData,
-    }
+  function saveSession(session) {
     const existing = JSON.parse(localStorage.getItem('wct_sessions') || '[]')
-    localStorage.setItem('wct_sessions', JSON.stringify([...existing, session]))
+    localStorage.setItem('wct_sessions', JSON.stringify([...existing, { id: crypto.randomUUID(), ...session }]))
+  }
+
+  function handleSave(formData) {
+    saveSession({ startedAt: new Date(startTime).toISOString(), durationSeconds: elapsed, ...formData })
     setView(VIEW.IDLE)
     setStartTime(null)
     setElapsed(0)
+  }
+
+  function handleManualSave(sessionData) {
+    saveSession(sessionData)
+    setView(VIEW.IDLE)
   }
 
   function handleDiscard() {
@@ -86,7 +89,7 @@ export default function App() {
   }
 
   function handleNavigate(target) {
-    if (view === VIEW.RUNNING || view === VIEW.FORM) return
+    if (view === VIEW.RUNNING || view === VIEW.FORM || view === VIEW.MANUAL) return
     setPage(target)
   }
 
@@ -94,13 +97,16 @@ export default function App() {
     <div className={`layout${showNav ? ' with-nav' : ''}`}>
       <div className="app">
         {page === 'home' && view === VIEW.IDLE && (
-          <IdleScreen onStart={handleStart} />
+          <IdleScreen onStart={handleStart} onManual={() => setView(VIEW.MANUAL)} />
         )}
         {page === 'home' && view === VIEW.RUNNING && (
           <TimerScreen elapsed={elapsed} onStop={handleStop} />
         )}
         {page === 'home' && view === VIEW.FORM && (
           <SessionForm elapsed={elapsed} onSave={handleSave} onDiscard={handleDiscard} />
+        )}
+        {page === 'home' && view === VIEW.MANUAL && (
+          <ManualSessionForm onSave={handleManualSave} onCancel={() => setView(VIEW.IDLE)} />
         )}
         {page === 'analytics' && <Analytics />}
       </div>

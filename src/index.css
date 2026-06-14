@@ -306,6 +306,80 @@ body {
   color: var(--accent);
 }
 
+/* Manual session button */
+.btn-manual {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 14px;
+  font-family: inherit;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-manual:hover {
+  border-color: var(--text-dim);
+  color: var(--text);
+}
+
+/* Duration inputs */
+.duration-row {
+  display: flex;
+  gap: 10px;
+}
+
+.duration-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.duration-input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.duration-input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 500;
+  width: 100%;
+  padding: 10px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.duration-input::placeholder {
+  color: var(--text-dim);
+}
+
+.duration-input::-webkit-inner-spin-button,
+.duration-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.duration-unit {
+  font-size: 13px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* Date input */
+input[type="date"].select {
+  color-scheme: dark;
+}
+
 /* Wellbeing picker */
 .wellbeing-row {
   display: flex;
