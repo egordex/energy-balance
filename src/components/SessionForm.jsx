@@ -16,6 +16,14 @@ const DEPTH_OPTIONS = [
   { value: 'deep',    label: 'Глубокая',       icon: '▼▼' },
 ]
 
+const WELLBEING = [
+  { value: 1, emoji: '😫', label: 'Истощён' },
+  { value: 2, emoji: '😕', label: 'Плохо' },
+  { value: 3, emoji: '😐', label: 'Нормально' },
+  { value: 4, emoji: '😊', label: 'Хорошо' },
+  { value: 5, emoji: '🚀', label: 'Отлично' },
+]
+
 function formatDuration(totalSeconds) {
   const h = Math.floor(totalSeconds / 3600)
   const m = Math.floor((totalSeconds % 3600) / 60)
@@ -28,6 +36,7 @@ function formatDuration(totalSeconds) {
 export default function SessionForm({ elapsed, onSave, onDiscard }) {
   const [workType, setWorkType] = useState('')
   const [depth, setDepth] = useState('')
+  const [wellbeing, setWellbeing] = useState(null)
   const [comment, setComment] = useState('')
 
   const canSave = workType !== '' && depth !== ''
@@ -35,7 +44,7 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
   function handleSubmit(e) {
     e.preventDefault()
     if (!canSave) return
-    onSave({ workType, depth, comment: comment.trim() })
+    onSave({ workType, depth, wellbeing, comment: comment.trim() })
   }
 
   return (
@@ -87,7 +96,35 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
         </div>
 
         <div className="field">
-          <label htmlFor="comment">Комментарий <span style={{ fontWeight: 400, textTransform: 'none', fontSize: '11px', color: 'var(--text-dim)' }}>(необязательно)</span></label>
+          <label>
+            Состояние сейчас{' '}
+            <span style={{ fontWeight: 400, textTransform: 'none', fontSize: '11px', color: 'var(--text-dim)' }}>
+              (необязательно)
+            </span>
+          </label>
+          <div className="wellbeing-row">
+            {WELLBEING.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                className={`wb-btn${wellbeing === opt.value ? ' selected' : ''}`}
+                onClick={() => setWellbeing(wellbeing === opt.value ? null : opt.value)}
+                title={opt.label}
+              >
+                <span className="wb-emoji">{opt.emoji}</span>
+                <span className="wb-label">{opt.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="field">
+          <label htmlFor="comment">
+            Комментарий{' '}
+            <span style={{ fontWeight: 400, textTransform: 'none', fontSize: '11px', color: 'var(--text-dim)' }}>
+              (необязательно)
+            </span>
+          </label>
           <textarea
             id="comment"
             className="textarea"

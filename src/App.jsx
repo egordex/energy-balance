@@ -2,18 +2,46 @@ import { useState, useEffect, useRef } from 'react'
 import IdleScreen from './components/IdleScreen'
 import TimerScreen from './components/TimerScreen'
 import SessionForm from './components/SessionForm'
+import Analytics from './components/Analytics'
 
-const VIEW = {
-  IDLE: 'idle',
-  RUNNING: 'running',
-  FORM: 'form',
+const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form' }
+
+function NavBar({ page, onNavigate }) {
+  return (
+    <nav className="nav-bar">
+      <button
+        className={`nav-item${page === 'home' ? ' active' : ''}`}
+        onClick={() => onNavigate('home')}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Главная</span>
+      </button>
+      <button
+        className={`nav-item${page === 'analytics' ? ' active' : ''}`}
+        onClick={() => onNavigate('analytics')}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        <span>Аналитика</span>
+      </button>
+    </nav>
+  )
 }
 
 export default function App() {
+  const [page, setPage] = useState('home')
   const [view, setView] = useState(VIEW.IDLE)
   const [startTime, setStartTime] = useState(null)
   const [elapsed, setElapsed] = useState(0)
   const intervalRef = useRef(null)
+
+  const showNav = view === VIEW.IDLE || page === 'analytics'
 
   useEffect(() => {
     if (view === VIEW.RUNNING) {
@@ -57,19 +85,26 @@ export default function App() {
     setElapsed(0)
   }
 
+  function handleNavigate(target) {
+    if (view === VIEW.RUNNING || view === VIEW.FORM) return
+    setPage(target)
+  }
+
   return (
-    <div className="app">
-      {view === VIEW.IDLE && <IdleScreen onStart={handleStart} />}
-      {view === VIEW.RUNNING && (
-        <TimerScreen elapsed={elapsed} onStop={handleStop} />
-      )}
-      {view === VIEW.FORM && (
-        <SessionForm
-          elapsed={elapsed}
-          onSave={handleSave}
-          onDiscard={handleDiscard}
-        />
-      )}
+    <div className={`layout${showNav ? ' with-nav' : ''}`}>
+      <div className="app">
+        {page === 'home' && view === VIEW.IDLE && (
+          <IdleScreen onStart={handleStart} />
+        )}
+        {page === 'home' && view === VIEW.RUNNING && (
+          <TimerScreen elapsed={elapsed} onStop={handleStop} />
+        )}
+        {page === 'home' && view === VIEW.FORM && (
+          <SessionForm elapsed={elapsed} onSave={handleSave} onDiscard={handleDiscard} />
+        )}
+        {page === 'analytics' && <Analytics />}
+      </div>
+      {showNav && <NavBar page={page} onNavigate={handleNavigate} />}
     </div>
   )
 }

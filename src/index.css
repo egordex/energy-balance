@@ -306,6 +306,266 @@ body {
   color: var(--accent);
 }
 
+/* Wellbeing picker */
+.wellbeing-row {
+  display: flex;
+  gap: 6px;
+}
+
+.wb-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 4px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+
+.wb-btn:hover {
+  background: var(--surface-hover);
+}
+
+.wb-btn.selected {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.wb-emoji {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.wb-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.wb-btn.selected .wb-label {
+  color: var(--accent);
+}
+
+/* Navigation */
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout.with-nav {
+  padding-bottom: 64px;
+}
+
+.nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  height: 64px;
+  z-index: 100;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.nav-item:hover {
+  color: var(--text-muted);
+}
+
+.nav-item.active {
+  color: var(--accent);
+}
+
+/* Analytics */
+.analytics-wrap {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 32px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.analytics-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.analytics-period {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: -18px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-value.muted {
+  color: var(--text-dim);
+}
+
+.stat-value-unit {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.state-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.state-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.state-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* Insights */
+.insights-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.insight-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.insight-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+
+.insight-dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 6px;
+}
+
+.insight-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.no-state-hint {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 0 8px;
+  line-height: 1.5;
+}
+
+/* Empty analytics */
+.analytics-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.empty-icon {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.empty-hint {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
 /* Pulse animation for active session */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
