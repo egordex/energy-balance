@@ -75,12 +75,31 @@ body {
   padding-top: 32px;
 }
 
-.home-top {
+.home-header {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  text-align: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header-icon-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.header-icon-btn:hover {
+  color: var(--text);
+  border-color: var(--text-dim);
 }
 
 .home-bottom {
