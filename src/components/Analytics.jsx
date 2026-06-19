@@ -56,7 +56,7 @@ export default function Analytics() {
 
   return (
     <div className="analytics-wrap">
-      <h1 className="analytics-title">Аналитика</h1>
+      <h1 className="page-title">Аналитика</h1>
       <p className="analytics-period">За последние 30 дней</p>
 
       <div className="stat-grid">
