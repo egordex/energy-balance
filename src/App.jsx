@@ -5,6 +5,7 @@ import SessionForm from './components/SessionForm'
 import ManualSessionForm from './components/ManualSessionForm'
 import Analytics from './components/Analytics'
 import InfoPage from './components/InfoPage'
+import InstallPrompt from './components/InstallPrompt'
 
 const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form', MANUAL: 'manual' }
 
@@ -52,6 +53,7 @@ export default function App() {
   const [view, setView] = useState(VIEW.IDLE)
   const [startTime, setStartTime] = useState(null)
   const [elapsed, setElapsed] = useState(0)
+  const [showInstall, setShowInstall] = useState(false)
   const intervalRef = useRef(null)
 
   const showNav = view === VIEW.IDLE || page !== 'home'
@@ -87,6 +89,10 @@ export default function App() {
     setView(VIEW.IDLE)
     setStartTime(null)
     setElapsed(0)
+    if (!localStorage.getItem('wct_install_shown')) {
+      localStorage.setItem('wct_install_shown', '1')
+      setShowInstall(true)
+    }
   }
 
   function handleManualSave(sessionData) {
@@ -124,6 +130,7 @@ export default function App() {
         {page === 'info' && <InfoPage />}
       </div>
       {showNav && <NavBar page={page} onNavigate={handleNavigate} />}
+      {showInstall && <InstallPrompt onClose={() => setShowInstall(false)} />}
     </div>
   )
 }

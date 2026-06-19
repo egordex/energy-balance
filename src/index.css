@@ -338,6 +338,138 @@ body {
   color: var(--accent);
 }
 
+/* Overlay backdrop (shared) */
+.overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.overlay-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s;
+}
+
+.overlay-close:hover {
+  color: var(--text);
+}
+
+/* Install prompt */
+.install-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 32px 24px 28px;
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+  animation: slideUp 0.25s ease;
+  text-align: center;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.install-icon {
+  font-size: 40px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.install-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.install-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.install-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.install-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.install-step-num {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.install-inline-icon {
+  font-size: 16px;
+}
+
+.install-other {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.btn-install-ok {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-install-ok:hover {
+  background: var(--accent-hover);
+}
+
 /* Info page */
 .info-page {
   width: 100%;
