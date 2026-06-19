@@ -24,6 +24,12 @@ export function playReminder() {
   setTimeout(() => playTone(880, 0.2, 0.25), 180)
 }
 
+export function playStart() {
+  playTone(523, 0.1, 0.2)
+  setTimeout(() => playTone(659, 0.1, 0.2), 120)
+  setTimeout(() => playTone(784, 0.25, 0.2), 240)
+}
+
 export function playStop() {
   playTone(520, 0.12, 0.2)
 }

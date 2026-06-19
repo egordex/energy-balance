@@ -6,7 +6,7 @@ import ManualSessionForm from './components/ManualSessionForm'
 import Analytics from './components/Analytics'
 import InfoPage from './components/InfoPage'
 import InstallPrompt from './components/InstallPrompt'
-import { playReminder, playStop } from './utils/sound'
+import { playStart, playReminder, playStop } from './utils/sound'
 
 const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form', MANUAL: 'manual' }
 const REMINDER_INTERVAL = 25 * 60
@@ -79,6 +79,7 @@ export default function App() {
   }, [view, startTime])
 
   function handleStart() {
+    playStart()
     setStartTime(Date.now())
     setElapsed(0)
     lastReminderRef.current = 0
