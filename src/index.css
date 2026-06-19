@@ -545,6 +545,12 @@ body {
   color: var(--danger);
 }
 
+.session-confirm-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
 /* Recent section on home */
 .recent-section {
   width: 100%;
