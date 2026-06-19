@@ -49,6 +49,13 @@ body {
   min-height: 100vh;
 }
 
+.app:has(.analytics-wrap),
+.app:has(.info-page) {
+  justify-content: flex-start;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -311,7 +318,7 @@ body {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  padding: 32px 16px 16px;
+  padding: 32px 16px 24px;
   display: flex;
   flex-direction: column;
   gap: 20px;
