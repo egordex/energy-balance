@@ -5,11 +5,16 @@ import SessionForm from './components/SessionForm'
 import ManualSessionForm from './components/ManualSessionForm'
 import Analytics from './components/Analytics'
 import InfoPage from './components/InfoPage'
+import HistoryPage from './components/HistoryPage'
 import InstallPrompt from './components/InstallPrompt'
 import { playStart, playReminder, playStop } from './utils/sound'
 
 const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form', MANUAL: 'manual' }
 const REMINDER_INTERVAL = 25 * 60
+
+function loadSessions() {
+  return JSON.parse(localStorage.getItem('wct_sessions') || '[]')
+}
 
 function NavBar({ page, onNavigate }) {
   return (
@@ -56,10 +61,11 @@ export default function App() {
   const [startTime, setStartTime] = useState(null)
   const [elapsed, setElapsed] = useState(0)
   const [showInstall, setShowInstall] = useState(false)
+  const [sessions, setSessions] = useState(loadSessions)
   const intervalRef = useRef(null)
   const lastReminderRef = useRef(0)
 
-  const showNav = view === VIEW.IDLE || page !== 'home'
+  const showNav = (page === 'home' && view === VIEW.IDLE) || (page !== 'home' && page !== 'history')
 
   useEffect(() => {
     if (view === VIEW.RUNNING) {
@@ -78,6 +84,11 @@ export default function App() {
     return () => clearInterval(intervalRef.current)
   }, [view, startTime])
 
+  function persistSessions(next) {
+    localStorage.setItem('wct_sessions', JSON.stringify(next))
+    setSessions(next)
+  }
+
   function handleStart() {
     playStart()
     setStartTime(Date.now())
@@ -91,13 +102,9 @@ export default function App() {
     setView(VIEW.FORM)
   }
 
-  function saveSession(session) {
-    const existing = JSON.parse(localStorage.getItem('wct_sessions') || '[]')
-    localStorage.setItem('wct_sessions', JSON.stringify([...existing, { id: crypto.randomUUID(), ...session }]))
-  }
-
   function handleSave(formData) {
-    saveSession({ startedAt: new Date(startTime).toISOString(), durationSeconds: elapsed, ...formData })
+    const session = { id: crypto.randomUUID(), startedAt: new Date(startTime).toISOString(), durationSeconds: elapsed, ...formData }
+    persistSessions([...sessions, session])
     setView(VIEW.IDLE)
     setStartTime(null)
     setElapsed(0)
@@ -108,7 +115,7 @@ export default function App() {
   }
 
   function handleManualSave(sessionData) {
-    saveSession(sessionData)
+    persistSessions([...sessions, { id: crypto.randomUUID(), ...sessionData }])
     setView(VIEW.IDLE)
   }
 
@@ -116,6 +123,14 @@ export default function App() {
     setView(VIEW.IDLE)
     setStartTime(null)
     setElapsed(0)
+  }
+
+  function handleDeleteSession(id) {
+    persistSessions(sessions.filter((s) => s.id !== id))
+  }
+
+  function handleClearAll() {
+    persistSessions([])
   }
 
   function handleNavigate(target) {
@@ -127,7 +142,12 @@ export default function App() {
     <div className={`layout${showNav ? ' with-nav' : ''}`}>
       <div className="app">
         {page === 'home' && view === VIEW.IDLE && (
-          <IdleScreen onStart={handleStart} onManual={() => setView(VIEW.MANUAL)} />
+          <IdleScreen
+            onStart={handleStart}
+            onManual={() => setView(VIEW.MANUAL)}
+            sessions={sessions}
+            onViewHistory={() => setPage('history')}
+          />
         )}
         {page === 'home' && view === VIEW.RUNNING && (
           <TimerScreen elapsed={elapsed} onStop={handleStop} />
@@ -140,6 +160,14 @@ export default function App() {
         )}
         {page === 'analytics' && <Analytics />}
         {page === 'info' && <InfoPage />}
+        {page === 'history' && (
+          <HistoryPage
+            sessions={sessions}
+            onDelete={handleDeleteSession}
+            onClearAll={handleClearAll}
+            onBack={() => setPage('home')}
+          />
+        )}
       </div>
       {showNav && <NavBar page={page} onNavigate={handleNavigate} />}
       {showInstall && <InstallPrompt onClose={() => setShowInstall(false)} />}
