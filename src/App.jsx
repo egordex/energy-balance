@@ -4,6 +4,7 @@ import TimerScreen from './components/TimerScreen'
 import SessionForm from './components/SessionForm'
 import ManualSessionForm from './components/ManualSessionForm'
 import Analytics from './components/Analytics'
+import InfoPage from './components/InfoPage'
 
 const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form', MANUAL: 'manual' }
 
@@ -31,6 +32,17 @@ function NavBar({ page, onNavigate }) {
         </svg>
         <span>Аналитика</span>
       </button>
+      <button
+        className={`nav-item${page === 'info' ? ' active' : ''}`}
+        onClick={() => onNavigate('info')}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span>Инфо</span>
+      </button>
     </nav>
   )
 }
@@ -42,7 +54,7 @@ export default function App() {
   const [elapsed, setElapsed] = useState(0)
   const intervalRef = useRef(null)
 
-  const showNav = view === VIEW.IDLE || page === 'analytics'
+  const showNav = view === VIEW.IDLE || page !== 'home'
 
   useEffect(() => {
     if (view === VIEW.RUNNING) {
@@ -109,6 +121,7 @@ export default function App() {
           <ManualSessionForm onSave={handleManualSave} onCancel={() => setView(VIEW.IDLE)} />
         )}
         {page === 'analytics' && <Analytics />}
+        {page === 'info' && <InfoPage />}
       </div>
       {showNav && <NavBar page={page} onNavigate={handleNavigate} />}
     </div>
