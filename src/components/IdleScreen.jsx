@@ -2,7 +2,7 @@ export default function IdleScreen({ onStart, onManual }) {
   return (
     <div className="home-wrap">
       <div className="home-top">
-        <h1 className="page-title">Deep Work Balance</h1>
+        <h1 className="page-title">Work Energy Balance</h1>
         <p className="idle-hint">
           Запустите таймер, когда готовы к работе.<br />
           Завершите — когда захотите сделать паузу.
