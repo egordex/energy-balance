@@ -1,7 +1,7 @@
 export default function IdleScreen({ onStart, onManual }) {
   return (
     <div className="home-wrap">
-      <h1 className="page-title">Work Capacity Tracker</h1>
+      <h1 className="page-title">Deep Work</h1>
       <div className="card">
         <div className="idle-screen">
           <button className="btn btn-primary" onClick={onStart}>
