@@ -70,8 +70,23 @@ body {
   max-width: 480px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  flex: 1;
   padding-top: 32px;
+}
+
+.home-top {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home-bottom {
+  margin-top: auto;
+  padding-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 
 .card {
