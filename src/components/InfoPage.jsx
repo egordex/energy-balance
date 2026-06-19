@@ -44,9 +44,9 @@ export default function InfoPage() {
       <div className="info-divider" />
 
       <div className="info-section">
-        <h2 className="info-section-title">Автор</h2>
+        <h2 className="info-section-title">Разработка приложения</h2>
         <div className="info-author">
-          <span className="info-author-name">Egordex</span>
+          <span className="info-author-name">Егор Поляков</span>
           <a
             href="https://t.me/toegor"
             target="_blank"
