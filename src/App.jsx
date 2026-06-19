@@ -6,8 +6,10 @@ import ManualSessionForm from './components/ManualSessionForm'
 import Analytics from './components/Analytics'
 import InfoPage from './components/InfoPage'
 import InstallPrompt from './components/InstallPrompt'
+import { playReminder, playStop } from './utils/sound'
 
 const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form', MANUAL: 'manual' }
+const REMINDER_INTERVAL = 25 * 60
 
 function NavBar({ page, onNavigate }) {
   return (
@@ -55,13 +57,20 @@ export default function App() {
   const [elapsed, setElapsed] = useState(0)
   const [showInstall, setShowInstall] = useState(false)
   const intervalRef = useRef(null)
+  const lastReminderRef = useRef(0)
 
   const showNav = view === VIEW.IDLE || page !== 'home'
 
   useEffect(() => {
     if (view === VIEW.RUNNING) {
       intervalRef.current = setInterval(() => {
-        setElapsed(Math.floor((Date.now() - startTime) / 1000))
+        const secs = Math.floor((Date.now() - startTime) / 1000)
+        setElapsed(secs)
+        const chunk = Math.floor(secs / REMINDER_INTERVAL)
+        if (chunk > 0 && chunk !== lastReminderRef.current) {
+          lastReminderRef.current = chunk
+          playReminder()
+        }
       }, 1000)
     } else {
       clearInterval(intervalRef.current)
@@ -72,10 +81,12 @@ export default function App() {
   function handleStart() {
     setStartTime(Date.now())
     setElapsed(0)
+    lastReminderRef.current = 0
     setView(VIEW.RUNNING)
   }
 
   function handleStop() {
+    playStop()
     setView(VIEW.FORM)
   }
 
