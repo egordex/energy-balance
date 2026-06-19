@@ -508,6 +508,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-right: 28px;
 }
 
 .session-card-date {
