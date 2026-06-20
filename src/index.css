@@ -190,9 +190,28 @@ body {
   height: 100%;
 }
 
-.home-hero-title {
+.home-hero-center {
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-hero-spinner {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  animation: hero-spin 20s linear infinite;
+}
+
+@keyframes hero-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.home-hero-title {
+  position: relative;
   font-size: 36px;
   font-weight: 700;
   color: #fff;
