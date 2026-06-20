@@ -111,6 +111,17 @@ body {
   letter-spacing: -0.02em;
 }
 
+.page-header--stack {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.page-header-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
 .header-icon-btn {
   background: none;
   border: none;
