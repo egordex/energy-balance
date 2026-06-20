@@ -48,10 +48,10 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
   }
 
   return (
-    <div className="card">
+    <div className="fullscreen-form">
       <form className="session-form" onSubmit={handleSubmit}>
         <div className="form-header">
-          <h2 className="form-title">Как прошла сессия?</h2>
+          <h2 className="page-title">Как прошла сессия?</h2>
           <p className="form-duration">
             Длительность: <strong>{formatDuration(elapsed)}</strong>
           </p>
@@ -135,7 +135,7 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
           />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 'auto' }}>
           <button type="submit" className="btn btn-save" disabled={!canSave}>
             Сохранить сессию
           </button>

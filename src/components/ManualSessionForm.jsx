@@ -64,10 +64,10 @@ export default function ManualSessionForm({ onSave, onCancel }) {
   }
 
   return (
-    <div className="card">
+    <div className="fullscreen-form">
       <form className="session-form" onSubmit={handleSubmit}>
         <div className="form-header">
-          <h2 className="form-title">Прошлая сессия</h2>
+          <h2 className="page-title">Прошлая сессия</h2>
           <p className="form-duration" style={{ color: 'var(--text-muted)' }}>
             Запись без таймера
           </p>
@@ -194,7 +194,7 @@ export default function ManualSessionForm({ onSave, onCancel }) {
           />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 'auto' }}>
           <button type="submit" className="btn btn-save" disabled={!canSave}>
             Сохранить сессию
           </button>
