@@ -12,8 +12,8 @@ export default function IdleScreen({ onStart, onManual, sessions, onViewHistory 
         )}
       </header>
       <p className="idle-hint">
-        Запустите таймер, когда готовы к работе.<br />
-        Завершите — когда захотите сделать паузу.
+        Сколько часов глубокой работы — ваш предел?<br />
+        Отслеживайте и находите свою норму.
       </p>
       <div className="home-bottom">
         <button className="btn btn-primary" onClick={onStart}>
