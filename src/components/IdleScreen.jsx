@@ -28,20 +28,18 @@ export default function IdleScreen({ onStart, onManual, sessions, onViewHistory 
         )}
         <div className="home-hero-center">
           <svg viewBox="0 0 200 200" className="home-hero-spinner">
-            <line x1="100" y1="18" x2="100" y2="4" stroke="rgba(126,204,232,0.5)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="115" y1="20" x2="122" y2="8" stroke="rgba(162,220,240,0.45)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="127" y1="27" x2="138" y2="18" stroke="rgba(184,229,245,0.38)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="134" y1="39" x2="147" y2="34" stroke="rgba(130,208,234,0.42)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="134" y1="161" x2="147" y2="166" stroke="rgba(90,185,222,0.38)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="127" y1="173" x2="138" y2="182" stroke="rgba(61,156,204,0.42)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="115" y1="180" x2="122" y2="192" stroke="rgba(45,125,181,0.48)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="100" y1="182" x2="100" y2="196" stroke="rgba(38,79,138,0.45)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="85" y1="180" x2="78" y2="192" stroke="rgba(30,58,110,0.48)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="73" y1="173" x2="62" y2="182" stroke="rgba(26,45,85,0.42)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="66" y1="161" x2="53" y2="166" stroke="rgba(31,63,114,0.38)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="66" y1="39" x2="53" y2="34" stroke="rgba(66,114,165,0.42)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="73" y1="27" x2="62" y2="18" stroke="rgba(90,150,190,0.38)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="85" y1="20" x2="78" y2="8" stroke="rgba(110,180,210,0.45)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="100" y1="18" x2="100" y2="3" stroke="rgba(126,204,232,0.5)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="141" y1="29" x2="149" y2="16" stroke="rgba(162,220,240,0.45)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="171" y1="59" x2="184" y2="52" stroke="rgba(184,229,245,0.4)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="182" y1="100" x2="197" y2="100" stroke="rgba(130,208,234,0.45)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="171" y1="141" x2="184" y2="149" stroke="rgba(90,185,222,0.4)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="141" y1="171" x2="149" y2="184" stroke="rgba(61,156,204,0.45)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="100" y1="182" x2="100" y2="197" stroke="rgba(45,125,181,0.5)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="59" y1="171" x2="52" y2="184" stroke="rgba(38,79,138,0.45)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="29" y1="141" x2="16" y2="149" stroke="rgba(30,58,110,0.5)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="18" y1="100" x2="3" y2="100" stroke="rgba(26,45,85,0.45)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="29" y1="59" x2="16" y2="52" stroke="rgba(31,63,114,0.4)" strokeWidth="7" strokeLinecap="round" />
+            <line x1="59" y1="29" x2="52" y2="16" stroke="rgba(66,114,165,0.45)" strokeWidth="7" strokeLinecap="round" />
           </svg>
           <h1 className="home-hero-title">Work Energy<br />Balance</h1>
         </div>
