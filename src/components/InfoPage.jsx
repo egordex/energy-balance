@@ -1,7 +1,9 @@
 export default function InfoPage() {
   return (
     <div className="info-page">
-      <h1 className="info-page-title">О приложении</h1>
+      <header className="page-header">
+        <h1 className="page-header-title">О приложении</h1>
+      </header>
 
       <div className="info-section">
         <h2 className="info-section-title">Зачем это нужно?</h2>

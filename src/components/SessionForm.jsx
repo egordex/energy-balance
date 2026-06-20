@@ -50,12 +50,12 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
   return (
     <div className="fullscreen-form">
       <form className="session-form" onSubmit={handleSubmit}>
-        <div className="form-header">
-          <h2 className="page-title">Как прошла сессия?</h2>
+        <header className="page-header">
+          <h2 className="page-header-title">Как прошла сессия?</h2>
           <p className="form-duration">
             Длительность: <strong>{formatDuration(elapsed)}</strong>
           </p>
-        </div>
+        </header>
 
         <div className="field">
           <label htmlFor="work-type">Тип работы</label>

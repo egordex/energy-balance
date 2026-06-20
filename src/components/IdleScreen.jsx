@@ -1,8 +1,8 @@
 export default function IdleScreen({ onStart, onManual, sessions, onViewHistory }) {
   return (
     <div className="home-wrap">
-      <div className="home-header">
-        <h1 className="page-title">Work Energy Balance</h1>
+      <header className="page-header">
+        <h1 className="page-header-title">Work Energy Balance</h1>
         {sessions.length > 0 && (
           <button className="header-icon-btn" onClick={onViewHistory} aria-label="История записей">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -10,7 +10,7 @@ export default function IdleScreen({ onStart, onManual, sessions, onViewHistory 
             </svg>
           </button>
         )}
-      </div>
+      </header>
       <p className="idle-hint">
         Запустите таймер, когда готовы к работе.<br />
         Завершите — когда захотите сделать паузу.

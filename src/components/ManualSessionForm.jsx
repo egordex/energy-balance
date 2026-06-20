@@ -66,12 +66,12 @@ export default function ManualSessionForm({ onSave, onCancel }) {
   return (
     <div className="fullscreen-form">
       <form className="session-form" onSubmit={handleSubmit}>
-        <div className="form-header">
-          <h2 className="page-title">Прошлая сессия</h2>
+        <header className="page-header">
+          <h2 className="page-header-title">Прошлая сессия</h2>
           <p className="form-duration" style={{ color: 'var(--text-muted)' }}>
             Запись без таймера
           </p>
-        </div>
+        </header>
 
         <div className="field">
           <label htmlFor="session-date">Дата</label>
