@@ -1,6 +1,6 @@
 {
   "name": "Work Energy Balance",
-  "short_name": "WEB",
+  "short_name": "WBalance",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#edf1f7",
