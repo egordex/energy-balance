@@ -39,6 +39,19 @@ body {
 }
 
 /* Layout */
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.layout.with-nav .app {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .app {
   flex: 1;
   display: flex;
@@ -46,7 +59,6 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  min-height: 100vh;
 }
 
 .app:has(.analytics-wrap),
@@ -55,8 +67,6 @@ body {
 .app:has(.history-page),
 .app:has(.fullscreen-form) {
   justify-content: flex-start;
-  min-height: 0;
-  overflow-y: auto;
 }
 
 /* Fullscreen form (session + manual) */
@@ -981,27 +991,13 @@ input[type="date"].select {
 }
 
 /* Navigation */
-.layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.layout.with-nav {
-  padding-bottom: 64px;
-}
-
 .nav-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
   display: flex;
   background: var(--surface);
   border-top: 1px solid var(--border);
   box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
   height: 64px;
-  z-index: 100;
+  flex-shrink: 0;
 }
 
 .nav-item {
