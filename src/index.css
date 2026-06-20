@@ -116,6 +116,10 @@ body {
   letter-spacing: -0.02em;
 }
 
+.page-header--static {
+  position: static;
+}
+
 .page-header--stack {
   flex-direction: column;
   align-items: flex-start;
