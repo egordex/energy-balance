@@ -46,8 +46,7 @@ export default function IdleScreen({ onStart, onManual, sessions, onViewHistory 
       </div>
       <div className="home-card">
         <p className="home-card-text">
-          Сколько часов глубокой работы — ваш предел?<br />
-          Отслеживайте и находите свою норму.
+          Сколько часов глубокой работы – ваш предел? Отслеживайте и находите свою норму.
         </p>
         <div className="home-card-actions">
           <button className="btn btn-primary" onClick={onStart}>
