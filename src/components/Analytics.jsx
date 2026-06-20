@@ -56,10 +56,10 @@ export default function Analytics() {
 
   return (
     <div className="analytics-wrap">
-      <header className="page-header">
+      <header className="page-header page-header--stack">
         <h1 className="page-header-title">Аналитика</h1>
+        <p className="page-header-sub">За последние 30 дней</p>
       </header>
-      <p className="analytics-period">За последние 30 дней</p>
 
       <div className="stat-grid">
         <StatCard
