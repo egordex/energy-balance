@@ -55,15 +55,30 @@ function NavBar({ page, onNavigate }) {
   )
 }
 
+const TOAST_MESSAGES = [
+  'Так держать!',
+  'Запись добавлена',
+  'Отдохни и возвращайся',
+  'Сессия сохранена',
+  'Вы на верном пути!',
+  'Прогресс зафиксирован',
+]
+
+function pickToast() {
+  return TOAST_MESSAGES[Math.floor(Math.random() * TOAST_MESSAGES.length)]
+}
+
 export default function App() {
   const [page, setPage] = useState('home')
   const [view, setView] = useState(VIEW.IDLE)
   const [startTime, setStartTime] = useState(null)
   const [elapsed, setElapsed] = useState(0)
   const [showInstall, setShowInstall] = useState(false)
+  const [toast, setToast] = useState(null)
   const [sessions, setSessions] = useState(loadSessions)
   const intervalRef = useRef(null)
   const lastReminderRef = useRef(0)
+  const toastTimer = useRef(null)
 
   const showNav = (page === 'home' && view === VIEW.IDLE) || (page !== 'home' && page !== 'history')
 
@@ -102,12 +117,19 @@ export default function App() {
     setView(VIEW.FORM)
   }
 
+  function showToast() {
+    clearTimeout(toastTimer.current)
+    setToast(pickToast())
+    toastTimer.current = setTimeout(() => setToast(null), 2500)
+  }
+
   function handleSave(formData) {
     const session = { id: crypto.randomUUID(), startedAt: new Date(startTime).toISOString(), durationSeconds: elapsed, ...formData }
     persistSessions([...sessions, session])
     setView(VIEW.IDLE)
     setStartTime(null)
     setElapsed(0)
+    showToast()
     if (!localStorage.getItem('wct_install_shown')) {
       localStorage.setItem('wct_install_shown', '1')
       setShowInstall(true)
@@ -117,6 +139,7 @@ export default function App() {
   function handleManualSave(sessionData) {
     persistSessions([...sessions, { id: crypto.randomUUID(), ...sessionData }])
     setView(VIEW.IDLE)
+    showToast()
   }
 
   function handleDiscard() {
@@ -171,6 +194,7 @@ export default function App() {
       </div>
       {showNav && <NavBar page={page} onNavigate={handleNavigate} />}
       {showInstall && <InstallPrompt onClose={() => setShowInstall(false)} />}
+      {toast && <div className="toast" key={toast + Date.now()}>{toast}</div>}
     </div>
   )
 }
