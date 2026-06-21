@@ -415,6 +415,43 @@ body {
   color: var(--text-muted);
 }
 
+.field-label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-tip-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+
+.info-tip-btn:hover {
+  color: var(--accent);
+}
+
+.info-tip-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
+}
+
 .select, .textarea {
   background: var(--bg);
   border: 1px solid var(--border);

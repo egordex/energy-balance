@@ -38,6 +38,7 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
   const [depth, setDepth] = useState('')
   const [wellbeing, setWellbeing] = useState(null)
   const [comment, setComment] = useState('')
+  const [showDepthTip, setShowDepthTip] = useState(false)
 
   const canSave = workType !== '' && depth !== ''
 
@@ -72,7 +73,21 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
         </div>
 
         <div className="field">
-          <label>Глубина работы</label>
+          <label className="field-label-row">
+            Глубина работы
+            <button type="button" className="info-tip-btn" onClick={() => setShowDepthTip(!showDepthTip)}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+            </button>
+          </label>
+          {showDepthTip && (
+            <div className="info-tip-text">
+              <span>Поверхностная – рутина, переписка, мелкие задачи без особого напряжения</span>
+              <span>Средняя – нормальная работа, требующая внимания</span>
+              <span>Глубокая – полное погружение, сложная интеллектуальная работа (концепция "deep work")</span>
+            </div>
+          )}
           <div className="depth-options">
             {DEPTH_OPTIONS.map((opt) => (
               <label
