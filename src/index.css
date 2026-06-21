@@ -70,7 +70,8 @@ body {
   justify-content: flex-start;
 }
 
-.app:has(.home-wrap) {
+.app:has(.home-wrap),
+.app:has(.history-page) {
   justify-content: flex-start;
   padding: 0;
   align-items: stretch;
