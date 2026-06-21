@@ -750,8 +750,6 @@ body {
 /* History page */
 .history-page {
   width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
   padding: 0 16px 24px;
   display: flex;
   flex-direction: column;
