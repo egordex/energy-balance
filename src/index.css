@@ -171,6 +171,26 @@ body {
   opacity: 0.7;
 }
 
+.header-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 0;
+  background: none;
+  border: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.header-close-btn:hover {
+  color: var(--text);
+}
+
 /* Home layout */
 .home-wrap {
   width: 100%;
