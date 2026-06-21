@@ -65,15 +65,13 @@ body {
 
 .app:has(.analytics-wrap),
 .app:has(.info-page),
-.app:has(.history-page),
 .app:has(.fullscreen-form) {
   justify-content: flex-start;
 }
 
-.app:has(.home-wrap),
-.app:has(.history-page) {
+.app--edge {
   justify-content: flex-start;
-  padding: 0;
+  padding: 0 !important;
   align-items: stretch;
 }
 

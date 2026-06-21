@@ -81,6 +81,7 @@ export default function App() {
   const toastTimer = useRef(null)
 
   const showNav = (page === 'home' && view === VIEW.IDLE) || (page !== 'home' && page !== 'history')
+  const isEdgeToEdge = (page === 'home' && view === VIEW.IDLE) || page === 'history'
 
   useEffect(() => {
     if (view === VIEW.RUNNING) {
@@ -163,7 +164,7 @@ export default function App() {
 
   return (
     <div className={`layout${showNav ? ' with-nav' : ''}`}>
-      <div className="app">
+      <div className={`app${isEdgeToEdge ? ' app--edge' : ''}`}>
         {page === 'home' && view === VIEW.IDLE && (
           <IdleScreen
             onStart={handleStart}
