@@ -6,7 +6,7 @@ export default function HistoryPage({ sessions, onDelete, onClearAll, onBack }) 
   const sorted = [...sessions].sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt))
 
   return (
-    <div className="history-page">
+    <div className="history-page" style={{ padding: '0 0 24px' }}>
       <header className="page-header">
         <button className="header-back-btn" onClick={onBack} aria-label="Назад">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
