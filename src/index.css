@@ -63,10 +63,7 @@ body {
   padding: 24px 16px;
 }
 
-.app:has(.analytics-wrap),
-.app:has(.info-page),
-.app:has(.history-page),
-.app:has(.fullscreen-form) {
+.app--top {
   justify-content: flex-start;
 }
 
