@@ -32,7 +32,17 @@ function computeHomeSummary(sessions) {
   return { todaySeconds, weekSeconds, weekDeepSeconds, weekSessions }
 }
 
-export default function IdleScreen({ onStart, onManual, sessions, onViewHistory }) {
+function formatTimer(totalSeconds) {
+  const h = Math.floor(totalSeconds / 3600)
+  const m = Math.floor((totalSeconds % 3600) / 60)
+  const s = totalSeconds % 60
+  const mm = String(m).padStart(2, '0')
+  const ss = String(s).padStart(2, '0')
+  if (h > 0) return `${h}:${mm}:${ss}`
+  return `${mm}:${ss}`
+}
+
+export default function IdleScreen({ onStart, onStop, onManual, sessions, onViewHistory, isRunning, elapsed }) {
   const summary = useMemo(() => computeHomeSummary(sessions), [sessions])
 
   return (
@@ -55,7 +65,7 @@ export default function IdleScreen({ onStart, onManual, sessions, onViewHistory 
           <circle cx="240" cy="240" r="35" fill="rgba(255,255,255,0.07)" />
           <circle cx="70" cy="140" r="45" fill="rgba(255,255,255,0.04)" />
         </svg>
-        {sessions.length > 0 && (
+        {!isRunning && sessions.length > 0 && (
           <button className="home-hero-history" onClick={onViewHistory} aria-label="История записей">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 8v4l3 3" /><circle cx="12" cy="12" r="10" />
@@ -63,7 +73,7 @@ export default function IdleScreen({ onStart, onManual, sessions, onViewHistory 
           </button>
         )}
         <div className="home-hero-center">
-          <svg viewBox="0 0 200 200" className="home-hero-spinner">
+          <svg viewBox="0 0 200 200" className={`home-hero-spinner${isRunning ? ' spinning-fast' : ''}`}>
             <line x1="100" y1="18" x2="100" y2="3" stroke="rgba(126,204,232,0.5)" strokeWidth="7" strokeLinecap="round" />
             <line x1="141" y1="29" x2="149" y2="16" stroke="rgba(162,220,240,0.45)" strokeWidth="7" strokeLinecap="round" />
             <line x1="171" y1="59" x2="184" y2="52" stroke="rgba(184,229,245,0.4)" strokeWidth="7" strokeLinecap="round" />
@@ -77,11 +87,18 @@ export default function IdleScreen({ onStart, onManual, sessions, onViewHistory 
             <line x1="29" y1="59" x2="16" y2="52" stroke="rgba(31,63,114,0.4)" strokeWidth="7" strokeLinecap="round" />
             <line x1="59" y1="29" x2="52" y2="16" stroke="rgba(66,114,165,0.45)" strokeWidth="7" strokeLinecap="round" />
           </svg>
-          <h1 className="home-hero-title">Work Energy<br />Balance</h1>
+          {isRunning ? (
+            <>
+              <p className="home-hero-status">Рабочая сессия идёт</p>
+              <h1 className="home-hero-title">{formatTimer(elapsed)}</h1>
+            </>
+          ) : (
+            <h1 className="home-hero-title">Work Energy<br />Balance</h1>
+          )}
         </div>
       </div>
       <div className="home-card">
-        {summary ? (
+        {!isRunning && summary ? (
           <div className="home-summary">
             <div className="home-summary-row">
               <div className="home-summary-item">
@@ -100,18 +117,26 @@ export default function IdleScreen({ onStart, onManual, sessions, onViewHistory 
               </p>
             )}
           </div>
-        ) : (
+        ) : !isRunning ? (
           <p className="home-card-text">
             Сколько часов глубокой работы – ваш предел? Отслеживайте и находите свою норму.
           </p>
-        )}
+        ) : null}
         <div className="home-card-actions">
-          <button className="btn btn-primary" onClick={onStart}>
-            Начать рабочую сессию
-          </button>
-          <button className="btn-manual" onClick={onManual}>
-            Записать прошлую сессию
-          </button>
+          {isRunning ? (
+            <button className="btn btn-stop" onClick={onStop}>
+              Завершить сессию
+            </button>
+          ) : (
+            <>
+              <button className="btn btn-primary" onClick={onStart}>
+                Начать рабочую сессию
+              </button>
+              <button className="btn-manual" onClick={onManual}>
+                Записать прошлую сессию
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

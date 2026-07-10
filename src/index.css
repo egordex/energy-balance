@@ -223,9 +223,24 @@ body {
   animation: hero-spin 20s linear infinite;
 }
 
+.home-hero-spinner.spinning-fast {
+  animation-duration: 4s;
+}
+
 @keyframes hero-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.home-hero-status {
+  position: relative;
+  z-index: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
 }
 
 .home-hero-title {
@@ -236,6 +251,7 @@ body {
   text-align: center;
   letter-spacing: -0.02em;
   line-height: 1.15;
+  font-variant-numeric: tabular-nums;
 }
 
 .home-hero-history {
@@ -414,6 +430,22 @@ body {
 .btn-primary:hover {
   background: var(--accent-hover);
   box-shadow: 0 6px 24px rgba(43, 92, 138, 0.35);
+}
+
+.btn-stop {
+  background: var(--danger);
+  color: #fff;
+  padding: 18px 40px;
+  font-size: 16px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(201, 64, 64, 0.25);
+  width: 100%;
+  max-width: 280px;
+}
+
+.btn-stop:hover {
+  background: var(--danger-hover);
+  box-shadow: 0 6px 24px rgba(201, 64, 64, 0.35);
 }
 
 .btn-danger {

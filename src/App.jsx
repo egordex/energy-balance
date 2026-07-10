@@ -80,9 +80,10 @@ export default function App() {
   const lastReminderRef = useRef(0)
   const toastTimer = useRef(null)
 
-  const showNav = (page === 'home' && view === VIEW.IDLE) || (page !== 'home' && page !== 'history')
+  const isRunning = view === VIEW.RUNNING
+  const showNav = (page === 'home' && (view === VIEW.IDLE || isRunning)) || (page !== 'home' && page !== 'history')
   const appClass = (() => {
-    if ((page === 'home' && view === VIEW.IDLE) || page === 'history') return 'app app--edge'
+    if ((page === 'home' && (view === VIEW.IDLE || isRunning)) || page === 'history') return 'app app--edge'
     if (page === 'analytics' || page === 'info' || page === 'history' ||
         view === VIEW.FORM || view === VIEW.MANUAL) return 'app app--top'
     return 'app'
@@ -170,16 +171,16 @@ export default function App() {
   return (
     <div className={`layout${showNav ? ' with-nav' : ''}`}>
       <div className={appClass}>
-        {page === 'home' && view === VIEW.IDLE && (
+        {page === 'home' && (view === VIEW.IDLE || isRunning) && (
           <IdleScreen
             onStart={handleStart}
+            onStop={handleStop}
             onManual={() => setView(VIEW.MANUAL)}
             sessions={sessions}
             onViewHistory={() => setPage('history')}
+            isRunning={isRunning}
+            elapsed={elapsed}
           />
-        )}
-        {page === 'home' && view === VIEW.RUNNING && (
-          <TimerScreen elapsed={elapsed} onStop={handleStop} />
         )}
         {page === 'home' && view === VIEW.FORM && (
           <SessionForm elapsed={elapsed} onSave={handleSave} onDiscard={handleDiscard} />
