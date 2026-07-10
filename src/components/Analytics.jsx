@@ -65,7 +65,7 @@ export default function Analytics() {
 
       {streak >= 2 && (
         <div className="streak-banner">
-          <span className="streak-text">Вы ведёте записи {streak} {streak < 5 ? 'дня' : 'дней'} подряд — супер! 🔥</span>
+          <span className="streak-text">Вы ведёте записи {streak} {streak < 5 ? 'дня' : 'дней'} подряд — {streak >= 10 ? 'вы молодец! 🏆' : streak >= 5 ? 'супер! 🔥' : 'так держать! 💪'}</span>
         </div>
       )}
 
