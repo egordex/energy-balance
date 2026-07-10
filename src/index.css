@@ -1224,6 +1224,28 @@ input[type="date"].select {
   color: var(--text-muted);
 }
 
+.streak-banner {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  background: var(--accent-dim);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+}
+
+.streak-number {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.streak-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
 .stat-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

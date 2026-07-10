@@ -157,6 +157,24 @@ export function generateInsightTexts(insights) {
   return texts
 }
 
+export function computeStreak(sessions) {
+  if (sessions.length === 0) return 0
+  const days = new Set(sessions.map((s) => s.startedAt.slice(0, 10)))
+  const today = new Date()
+  const todayStr = today.toISOString().slice(0, 10)
+  const d = new Date(today)
+  if (!days.has(todayStr)) {
+    d.setDate(d.getDate() - 1)
+    if (!days.has(d.toISOString().slice(0, 10))) return 0
+  }
+  let streak = 0
+  while (days.has(d.toISOString().slice(0, 10))) {
+    streak++
+    d.setDate(d.getDate() - 1)
+  }
+  return streak
+}
+
 export function formatSeconds(s) {
   const h = Math.floor(s / 3600)
   const m = Math.floor((s % 3600) / 60)

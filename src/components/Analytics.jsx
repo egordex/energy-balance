@@ -5,6 +5,7 @@ import {
   computeStats,
   computeInsights,
   generateInsightTexts,
+  computeStreak,
   formatSeconds,
 } from '../utils/analytics'
 
@@ -32,14 +33,15 @@ function StateBar({ value }) {
 }
 
 export default function Analytics() {
-  const { stats, insights, insightTexts, hasData } = useMemo(() => {
+  const { stats, insights, insightTexts, hasData, streak } = useMemo(() => {
     const all = loadSessions()
     const sessions = getSessionsLast30Days(all)
-    if (sessions.length === 0) return { hasData: false, stats: null, insights: null, insightTexts: [] }
+    if (sessions.length === 0) return { hasData: false, stats: null, insights: null, insightTexts: [], streak: 0 }
     const stats = computeStats(sessions)
     const insights = computeInsights(sessions)
     const insightTexts = generateInsightTexts(insights)
-    return { hasData: true, stats, insights, insightTexts }
+    const streak = computeStreak(all)
+    return { hasData: true, stats, insights, insightTexts, streak }
   }, [])
 
   if (!hasData) {
@@ -60,6 +62,13 @@ export default function Analytics() {
         <h1 className="page-header-title">Аналитика</h1>
         <p className="page-header-sub">За последние 30 дней</p>
       </header>
+
+      {streak >= 2 && (
+        <div className="streak-banner">
+          <span className="streak-number">{streak}</span>
+          <span className="streak-text">{streak === 1 ? 'день подряд' : streak < 5 ? 'дня подряд' : 'дней подряд'}</span>
+        </div>
+      )}
 
       <div className="stat-grid">
         <StatCard
