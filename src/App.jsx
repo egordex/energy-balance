@@ -16,7 +16,7 @@ function loadSessions() {
   return JSON.parse(localStorage.getItem('wct_sessions') || '[]')
 }
 
-function NavBar({ page, onNavigate }) {
+function NavBar({ page, onNavigate, isRunning }) {
   return (
     <nav className="nav-bar">
       <button
@@ -30,7 +30,7 @@ function NavBar({ page, onNavigate }) {
         <span>Главная</span>
       </button>
       <button
-        className={`nav-item${page === 'analytics' ? ' active' : ''}`}
+        className={`nav-item${page === 'analytics' ? ' active' : ''}${isRunning ? ' nav-item--disabled' : ''}`}
         onClick={() => onNavigate('analytics')}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -41,7 +41,7 @@ function NavBar({ page, onNavigate }) {
         <span>Аналитика</span>
       </button>
       <button
-        className={`nav-item${page === 'info' ? ' active' : ''}`}
+        className={`nav-item${page === 'info' ? ' active' : ''}${isRunning ? ' nav-item--disabled' : ''}`}
         onClick={() => onNavigate('info')}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -163,8 +163,15 @@ export default function App() {
     persistSessions([])
   }
 
+  function showNavHint() {
+    clearTimeout(toastTimer.current)
+    setToast('Сначала завершите сессию')
+    toastTimer.current = setTimeout(() => setToast(null), 2500)
+  }
+
   function handleNavigate(target) {
-    if (view === VIEW.RUNNING || view === VIEW.FORM || view === VIEW.MANUAL) return
+    if (view === VIEW.RUNNING) { showNavHint(); return }
+    if (view === VIEW.FORM || view === VIEW.MANUAL) return
     setPage(target)
   }
 
@@ -199,7 +206,7 @@ export default function App() {
           />
         )}
       </div>
-      {showNav && <NavBar page={page} onNavigate={handleNavigate} />}
+      {showNav && <NavBar page={page} onNavigate={handleNavigate} isRunning={isRunning} />}
       {showInstall && <InstallPrompt onClose={() => setShowInstall(false)} />}
       {toast && <div className="toast" key={toast + Date.now()}>{toast}</div>}
     </div>

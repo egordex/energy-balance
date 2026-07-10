@@ -47,7 +47,7 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
 
   return (
     <div className="home-wrap">
-      <div className="home-hero">
+      <div className={`home-hero${isRunning ? ' home-hero--running' : ''}`}>
         <svg className="home-hero-bg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
           <defs>
             <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
@@ -65,6 +65,7 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
           <circle cx="240" cy="240" r="35" fill="rgba(255,255,255,0.07)" />
           <circle cx="70" cy="140" r="45" fill="rgba(255,255,255,0.04)" />
         </svg>
+        {isRunning && <div className="home-hero-glow" />}
         {!isRunning && sessions.length > 0 && (
           <button className="home-hero-history" onClick={onViewHistory} aria-label="История записей">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -72,7 +73,7 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
             </svg>
           </button>
         )}
-        <div className="home-hero-center">
+        <div className={`home-hero-center${isRunning ? ' home-hero-center--running' : ''}`}>
           <svg viewBox="0 0 200 200" className={`home-hero-spinner${isRunning ? ' spinning-fast' : ''}`}>
             <line x1="100" y1="18" x2="100" y2="3" stroke="rgba(126,204,232,0.5)" strokeWidth="7" strokeLinecap="round" />
             <line x1="141" y1="29" x2="149" y2="16" stroke="rgba(162,220,240,0.45)" strokeWidth="7" strokeLinecap="round" />
@@ -89,8 +90,8 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
           </svg>
           {isRunning ? (
             <>
-              <p className="home-hero-status">Рабочая сессия идёт</p>
-              <h1 className="home-hero-title">{formatTimer(elapsed)}</h1>
+              <p className="home-hero-status">Рабочая сессия</p>
+              <h1 className="home-hero-timer">{formatTimer(elapsed)}</h1>
             </>
           ) : (
             <h1 className="home-hero-title">Work Energy<br />Balance</h1>
