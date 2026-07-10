@@ -1,4 +1,40 @@
+import { useMemo } from 'react'
+import { formatSeconds } from '../utils/analytics'
+
+function computeHomeSummary(sessions) {
+  if (sessions.length === 0) return null
+
+  const now = new Date()
+  const todayStr = now.toISOString().slice(0, 10)
+
+  const mondayDate = new Date(now)
+  const dow = mondayDate.getDay()
+  mondayDate.setDate(mondayDate.getDate() - ((dow + 6) % 7))
+  const mondayStr = mondayDate.toISOString().slice(0, 10)
+
+  let todaySeconds = 0
+  let weekSeconds = 0
+  let weekDeepSeconds = 0
+  let weekSessions = 0
+
+  for (const s of sessions) {
+    const day = s.startedAt.slice(0, 10)
+    if (day === todayStr) {
+      todaySeconds += s.durationSeconds
+    }
+    if (day >= mondayStr) {
+      weekSeconds += s.durationSeconds
+      weekSessions += 1
+      if (s.depth === 'deep') weekDeepSeconds += s.durationSeconds
+    }
+  }
+
+  return { todaySeconds, weekSeconds, weekDeepSeconds, weekSessions }
+}
+
 export default function IdleScreen({ onStart, onManual, sessions, onViewHistory }) {
+  const summary = useMemo(() => computeHomeSummary(sessions), [sessions])
+
   return (
     <div className="home-wrap">
       <div className="home-hero">
@@ -45,9 +81,30 @@ export default function IdleScreen({ onStart, onManual, sessions, onViewHistory 
         </div>
       </div>
       <div className="home-card">
-        <p className="home-card-text">
-          Сколько часов глубокой работы – ваш предел? Отслеживайте и находите свою норму.
-        </p>
+        {summary ? (
+          <div className="home-summary">
+            <div className="home-summary-row">
+              <div className="home-summary-item">
+                <span className="home-summary-value">{formatSeconds(summary.todaySeconds) || '0 мин'}</span>
+                <span className="home-summary-label">Сегодня</span>
+              </div>
+              <div className="home-summary-divider" />
+              <div className="home-summary-item">
+                <span className="home-summary-value">{formatSeconds(summary.weekSeconds) || '0 мин'}</span>
+                <span className="home-summary-label">За неделю</span>
+              </div>
+            </div>
+            {summary.weekDeepSeconds > 0 && (
+              <p className="home-summary-detail">
+                Глубокая работа: {formatSeconds(summary.weekDeepSeconds)}
+              </p>
+            )}
+          </div>
+        ) : (
+          <p className="home-card-text">
+            Сколько часов глубокой работы – ваш предел? Отслеживайте и находите свою норму.
+          </p>
+        )}
         <div className="home-card-actions">
           <button className="btn btn-primary" onClick={onStart}>
             Начать рабочую сессию
