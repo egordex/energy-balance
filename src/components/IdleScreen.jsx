@@ -111,11 +111,6 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
                 <span className="home-summary-label">За неделю</span>
               </div>
             </div>
-            {summary.weekDeepSeconds > 0 && (
-              <p className="home-summary-detail">
-                Глубокая работа: {formatSeconds(summary.weekDeepSeconds)}
-              </p>
-            )}
           </div>
         ) : !isRunning ? (
           <p className="home-card-text">
