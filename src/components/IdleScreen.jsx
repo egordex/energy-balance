@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm } from '../utils/analytics'
 
 function computeHomeSummary(sessions) {
@@ -45,6 +45,7 @@ function formatTimer(totalSeconds) {
 }
 
 export default function IdleScreen({ onStart, onStop, onManual, sessions, onViewHistory, isRunning, elapsed }) {
+  const [showRecoveryTip, setShowRecoveryTip] = useState(false)
   const summary = useMemo(() => computeHomeSummary(sessions), [sessions])
   const norm = useMemo(() => computePersonalNorm(getSessionsLast30Days(sessions)), [sessions])
 
@@ -124,9 +125,26 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
               </div>
             </div>
             {recoveryRange && (
-              <p className="home-recovery-hint">
-                Норма восстановления сегодня: {recoveryRange}
-              </p>
+              <div className="home-recovery-hint">
+                <div className="home-recovery-hint-row">
+                  <span>Норма восстановления сегодня: {recoveryRange}</span>
+                  <button
+                    type="button"
+                    className="home-recovery-tip-btn"
+                    onClick={() => setShowRecoveryTip(!showRecoveryTip)}
+                    aria-label="Как рассчитывается норма восстановления?"
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                  </button>
+                </div>
+                {showRecoveryTip && (
+                  <p className="home-recovery-tip-text">
+                    Норма = часы глубокой работы ÷ 2 + 1. Чем больше глубокой сосредоточенной работы, тем больше времени нужно на восстановление, чтобы не накапливать усталость. По методике Екатерины Конновой («Атлант устал»).
+                  </p>
+                )}
+              </div>
             )}
             {overNorm && (
               <p className="home-norm-hint">

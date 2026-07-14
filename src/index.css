@@ -406,13 +406,49 @@ body {
 }
 
 .home-recovery-hint {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--accent-dim);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px 8px 14px;
+}
+
+.home-recovery-hint-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   font-size: 13px;
   font-weight: 500;
   color: var(--accent);
-  background: var(--accent-dim);
+}
+
+.home-recovery-tip-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  opacity: 0.7;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.home-recovery-tip-btn:hover {
+  opacity: 1;
+}
+
+.home-recovery-tip-text {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  text-align: left;
+  background: var(--surface);
   border-radius: var(--radius-sm);
-  padding: 8px 14px;
-  text-align: center;
+  padding: 10px 12px;
 }
 
 .home-norm-hint {
