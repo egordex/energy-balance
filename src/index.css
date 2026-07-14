@@ -405,6 +405,16 @@ body {
   color: var(--text-muted);
 }
 
+.home-recovery-hint {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  text-align: center;
+}
+
 .home-norm-hint {
   font-size: 13px;
   font-weight: 500;

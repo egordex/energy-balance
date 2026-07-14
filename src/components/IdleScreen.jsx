@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { formatSeconds, getSessionsLast30Days, computePersonalNorm } from '../utils/analytics'
+import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm } from '../utils/analytics'
 
 function computeHomeSummary(sessions) {
   if (sessions.length === 0) return null
@@ -50,6 +50,7 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
 
   const overNorm =
     summary && norm && norm.maxHours !== null && summary.todayDeepSeconds / 3600 > norm.maxHours
+  const recoveryRange = summary ? formatRecoveryRange(summary.todayDeepSeconds) : null
 
   return (
     <div className="home-wrap">
@@ -122,6 +123,11 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
                 <span className="home-summary-label">За неделю</span>
               </div>
             </div>
+            {recoveryRange && (
+              <p className="home-recovery-hint">
+                Норма восстановления сегодня: {recoveryRange}
+              </p>
+            )}
             {overNorm && (
               <p className="home-norm-hint">
                 Сегодня уже больше вашей нормы ({norm.minHours}–{norm.maxHours} ч)

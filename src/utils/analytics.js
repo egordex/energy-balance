@@ -181,6 +181,24 @@ export function computeStreak(sessions) {
   return streak
 }
 
+// Recovery norm (Коннова, "Атлант устал"): часы восстановления = глубокая работа / 2 + 1
+export function computeRecoveryRange(deepSeconds) {
+  if (deepSeconds <= 0) return null
+  const deepHours = deepSeconds / 3600
+  const min = Math.round((deepHours / 2 + 1) * 2) / 2
+  return { min, max: min + 1 }
+}
+
+function formatHours(h) {
+  return Number.isInteger(h) ? String(h) : h.toFixed(1)
+}
+
+export function formatRecoveryRange(deepSeconds) {
+  const range = computeRecoveryRange(deepSeconds)
+  if (!range) return null
+  return `${formatHours(range.min)}–${formatHours(range.max)} ч`
+}
+
 export function formatSeconds(s) {
   const h = Math.floor(s / 3600)
   const m = Math.floor((s % 3600) / 60)

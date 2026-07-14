@@ -8,6 +8,7 @@ import InfoPage from './components/InfoPage'
 import HistoryPage from './components/HistoryPage'
 import InstallPrompt from './components/InstallPrompt'
 import { playStart, playReminder, playStop } from './utils/sound'
+import { formatRecoveryRange } from './utils/analytics'
 
 const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form', MANUAL: 'manual' }
 const REMINDER_INTERVAL = 25 * 60
@@ -124,19 +125,31 @@ export default function App() {
     setView(VIEW.FORM)
   }
 
-  function showToast() {
+  function showToast(message) {
     clearTimeout(toastTimer.current)
-    setToast(pickToast())
+    setToast(message || pickToast())
     toastTimer.current = setTimeout(() => setToast(null), 2500)
   }
 
   function handleSave(formData) {
     const session = { id: crypto.randomUUID(), startedAt: new Date(startTime).toISOString(), durationSeconds: elapsed, ...formData }
-    persistSessions([...sessions, session])
+    const next = [...sessions, session]
+    persistSessions(next)
     setView(VIEW.IDLE)
     setStartTime(null)
     setElapsed(0)
-    showToast()
+
+    if (session.depth === 'deep') {
+      const todayStr = session.startedAt.slice(0, 10)
+      const todayDeepSeconds = next
+        .filter((s) => s.startedAt.slice(0, 10) === todayStr && s.depth === 'deep')
+        .reduce((sum, s) => sum + s.durationSeconds, 0)
+      const range = formatRecoveryRange(todayDeepSeconds)
+      showToast(range ? `Норма восстановления: ${range}` : undefined)
+    } else {
+      showToast()
+    }
+
     if (!localStorage.getItem('wct_install_shown')) {
       localStorage.setItem('wct_install_shown', '1')
       setShowInstall(true)
