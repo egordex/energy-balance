@@ -247,10 +247,17 @@ body {
   position: absolute;
   width: 260px;
   height: 260px;
+  animation: hero-pulse 3.5s ease-in-out infinite;
+  transform-origin: center;
 }
 
 .home-hero-spinner.home-hero-spinner--active {
   animation: hero-spin 14s linear infinite;
+}
+
+@keyframes hero-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.07); opacity: 1; }
 }
 
 @keyframes hero-spin {
@@ -276,12 +283,12 @@ body {
 .home-hero-timer {
   position: relative;
   z-index: 1;
-  font-size: 36px;
+  font-size: clamp(64px, 18vw, 128px);
   font-weight: 700;
   color: #fff;
   text-align: center;
   letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
 
