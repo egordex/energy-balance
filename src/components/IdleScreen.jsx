@@ -55,15 +55,19 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
               <stop offset="50%" stopColor="#2b5c8a" />
               <stop offset="100%" stopColor="#3a7cb8" />
             </linearGradient>
+            <filter id="soft">
+              <feGaussianBlur stdDeviation="18" />
+            </filter>
           </defs>
           <rect width="400" height="500" fill="url(#hg)" />
-          <polygon points="200,50 400,0 400,350 250,200" fill="rgba(255,255,255,0.06)" />
-          <polygon points="0,80 200,50 150,350 0,280" fill="rgba(255,255,255,0.04)" />
-          <circle cx="310" cy="110" r="90" fill="rgba(100,180,255,0.1)" />
-          <circle cx="90" cy="340" r="110" fill="rgba(100,180,255,0.07)" />
-          <circle cx="350" cy="360" r="55" fill="rgba(100,180,255,0.06)" />
-          <circle cx="240" cy="240" r="35" fill="rgba(255,255,255,0.07)" />
-          <circle cx="70" cy="140" r="45" fill="rgba(255,255,255,0.04)" />
+          <g filter="url(#soft)">
+            <ellipse cx="320" cy="100" rx="120" ry="90" fill="rgba(100,180,255,0.13)" />
+            <ellipse cx="80" cy="350" rx="140" ry="110" fill="rgba(100,180,255,0.1)" />
+            <ellipse cx="200" cy="220" rx="160" ry="120" fill="rgba(255,255,255,0.05)" />
+            <ellipse cx="360" cy="380" rx="80" ry="70" fill="rgba(140,170,255,0.08)" />
+            <ellipse cx="60" cy="130" rx="70" ry="60" fill="rgba(255,255,255,0.05)" />
+            <ellipse cx="280" cy="430" rx="100" ry="60" fill="rgba(80,160,240,0.06)" />
+          </g>
         </svg>
         {isRunning && <div className="home-hero-glow" />}
         {!isRunning && sessions.length > 0 && (
