@@ -5,9 +5,14 @@ import {
   computeStats,
   computeInsights,
   generateInsightTexts,
+  computePersonalNorm,
   computeStreak,
   formatSeconds,
 } from '../utils/analytics'
+
+function formatNormRange(norm) {
+  return norm.maxHours === null ? `${norm.minHours}+ ч` : `${norm.minHours}–${norm.maxHours} ч`
+}
 
 function StatCard({ label, value, sub }) {
   return (
@@ -33,15 +38,16 @@ function StateBar({ value }) {
 }
 
 export default function Analytics() {
-  const { stats, insights, insightTexts, hasData, streak } = useMemo(() => {
+  const { stats, insights, insightTexts, hasData, streak, norm } = useMemo(() => {
     const all = loadSessions()
     const sessions = getSessionsLast30Days(all)
-    if (sessions.length === 0) return { hasData: false, stats: null, insights: null, insightTexts: [], streak: 0 }
+    if (sessions.length === 0) return { hasData: false, stats: null, insights: null, insightTexts: [], streak: 0, norm: null }
     const stats = computeStats(sessions)
     const insights = computeInsights(sessions)
     const insightTexts = generateInsightTexts(insights)
     const streak = computeStreak(all)
-    return { hasData: true, stats, insights, insightTexts, streak }
+    const norm = computePersonalNorm(sessions)
+    return { hasData: true, stats, insights, insightTexts, streak, norm }
   }, [])
 
   if (!hasData) {
@@ -62,6 +68,16 @@ export default function Analytics() {
         <h1 className="page-header-title">Аналитика</h1>
         <p className="page-header-sub">За последние 30 дней</p>
       </header>
+
+      {norm && (
+        <div className="norm-card">
+          <span className="norm-label">Ваша норма глубокой работы</span>
+          <span className="norm-value">{formatNormRange(norm)} в день</span>
+          <span className="norm-sub">
+            В такие дни у вас лучшее самочувствие — {norm.avgState.toFixed(1)}/5
+          </span>
+        </div>
+      )}
 
       {streak >= 2 && (
         <div className="streak-banner">

@@ -405,6 +405,16 @@ body {
   color: var(--text-muted);
 }
 
+.home-norm-hint {
+  font-size: 13px;
+  font-weight: 500;
+  color: #b8792e;
+  background: rgba(184, 121, 46, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  text-align: center;
+}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1307,6 +1317,36 @@ input[type="date"].select {
 .analytics-period {
   font-size: 13px;
   color: var(--text-muted);
+}
+
+.norm-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: 0 4px 16px rgba(43, 92, 138, 0.2);
+}
+
+.norm-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.norm-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.norm-sub {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .streak-banner {

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { formatSeconds } from '../utils/analytics'
+import { formatSeconds, getSessionsLast30Days, computePersonalNorm } from '../utils/analytics'
 
 function computeHomeSummary(sessions) {
   if (sessions.length === 0) return null
@@ -13,6 +13,7 @@ function computeHomeSummary(sessions) {
   const mondayStr = mondayDate.toISOString().slice(0, 10)
 
   let todaySeconds = 0
+  let todayDeepSeconds = 0
   let weekSeconds = 0
   let weekDeepSeconds = 0
   let weekSessions = 0
@@ -21,6 +22,7 @@ function computeHomeSummary(sessions) {
     const day = s.startedAt.slice(0, 10)
     if (day === todayStr) {
       todaySeconds += s.durationSeconds
+      if (s.depth === 'deep') todayDeepSeconds += s.durationSeconds
     }
     if (day >= mondayStr) {
       weekSeconds += s.durationSeconds
@@ -29,7 +31,7 @@ function computeHomeSummary(sessions) {
     }
   }
 
-  return { todaySeconds, weekSeconds, weekDeepSeconds, weekSessions }
+  return { todaySeconds, todayDeepSeconds, weekSeconds, weekDeepSeconds, weekSessions }
 }
 
 function formatTimer(totalSeconds) {
@@ -44,6 +46,10 @@ function formatTimer(totalSeconds) {
 
 export default function IdleScreen({ onStart, onStop, onManual, sessions, onViewHistory, isRunning, elapsed }) {
   const summary = useMemo(() => computeHomeSummary(sessions), [sessions])
+  const norm = useMemo(() => computePersonalNorm(getSessionsLast30Days(sessions)), [sessions])
+
+  const overNorm =
+    summary && norm && norm.maxHours !== null && summary.todayDeepSeconds / 3600 > norm.maxHours
 
   return (
     <div className="home-wrap">
@@ -116,6 +122,11 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
                 <span className="home-summary-label">За неделю</span>
               </div>
             </div>
+            {overNorm && (
+              <p className="home-norm-hint">
+                Сегодня уже больше вашей нормы ({norm.minHours}–{norm.maxHours} ч)
+              </p>
+            )}
           </div>
         ) : !isRunning ? (
           <p className="home-card-text">

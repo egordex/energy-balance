@@ -33,6 +33,35 @@ function groupByDay(sessions) {
   return byDay
 }
 
+// Day buckets by deep-work hours: 0-1, 1-2, 2-3, 3-4, 4-5, 5+
+function findSweetSpot(daysWithState) {
+  const buckets = [0, 1, 2, 3, 4, 5]
+  const bucketData = buckets.map((h) => {
+    const states = daysWithState
+      .filter(([, d]) => {
+        const dh = d.deepSeconds / 3600
+        return h === 5 ? dh >= 5 : dh >= h && dh < h + 1
+      })
+      .flatMap(([, d]) => d.wellbeings)
+    return { hours: h, avgState: states.length ? states.reduce((a, b) => a + b, 0) / states.length : null, count: states.length }
+  })
+  return bucketData.filter((b) => b.count >= 2).sort((a, b) => (b.avgState ?? 0) - (a.avgState ?? 0))[0] ?? null
+}
+
+// Personal norm: the deep-work range that historically correlates with the best wellbeing
+export function computePersonalNorm(sessions) {
+  const byDay = groupByDay(sessions)
+  const daysWithState = Object.entries(byDay).filter(([, d]) => d.wellbeings.length > 0)
+  const sweetSpot = findSweetSpot(daysWithState)
+  if (!sweetSpot) return null
+  return {
+    minHours: sweetSpot.hours,
+    maxHours: sweetSpot.hours === 5 ? null : sweetSpot.hours + 1,
+    avgState: sweetSpot.avgState,
+    sampleDays: sweetSpot.count,
+  }
+}
+
 export function computeInsights(sessions) {
   const byDay = groupByDay(sessions)
   const days = Object.entries(byDay)
@@ -81,28 +110,12 @@ export function computeInsights(sessions) {
     ? lowStates.reduce((a, b) => a + b, 0) / lowStates.length
     : null
 
-  // Find sweet spot: day buckets by deep hours (0-1, 1-2, 2-3, 3-4, 4-5, 5+)
-  const buckets = [0, 1, 2, 3, 4, 5]
-  const bucketData = buckets.map((h) => {
-    const states = daysWithState
-      .filter(([, d]) => {
-        const dh = d.deepSeconds / 3600
-        return h === 5 ? dh >= 5 : dh >= h && dh < h + 1
-      })
-      .flatMap(([, d]) => d.wellbeings)
-    return { hours: h, avgState: states.length ? states.reduce((a, b) => a + b, 0) / states.length : null, count: states.length }
-  })
-  const sweetSpot = bucketData
-    .filter((b) => b.count >= 2)
-    .sort((a, b) => (b.avgState ?? 0) - (a.avgState ?? 0))[0]
-
   return {
     avgDeepHoursPerDay,
     bestDow,
     bestDowScore,
     avgHigh,
     avgLow,
-    sweetSpot,
     hasStateData: daysWithState.length > 0,
   }
 }
@@ -112,7 +125,7 @@ const DOW_NAMES_PREP = ['воскресеньям', 'понедельникам'
 
 export function generateInsightTexts(insights) {
   if (!insights) return []
-  const { avgDeepHoursPerDay, bestDow, bestDowScore, avgHigh, avgLow, sweetSpot, hasStateData } = insights
+  const { avgDeepHoursPerDay, bestDow, bestDowScore, avgHigh, avgLow, hasStateData } = insights
   const texts = []
 
   if (avgDeepHoursPerDay > 0) {
@@ -124,13 +137,6 @@ export function generateInsightTexts(insights) {
   if (bestDow !== null) {
     texts.push(
       `Лучшее самочувствие по ${DOW_NAMES_PREP[bestDow]} — средняя оценка ${bestDowScore.toFixed(1)} из 5.`,
-    )
-  }
-
-  if (sweetSpot) {
-    const label = sweetSpot.hours === 5 ? '5+ ч' : `${sweetSpot.hours}–${sweetSpot.hours + 1} ч`
-    texts.push(
-      `Ваше лучшее состояние чаще наблюдается в дни с ${label} глубокой работы (${sweetSpot.avgState.toFixed(1)}/5).`,
     )
   }
 
