@@ -78,19 +78,19 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
           </button>
         )}
         <div className={`home-hero-center${isRunning ? ' home-hero-center--running' : ''}`}>
-          <svg viewBox="0 0 200 200" className={`home-hero-spinner${isRunning ? ' spinning-fast' : ''}`}>
-            <line x1="100" y1="18" x2="100" y2="3" stroke="rgba(126,204,232,0.5)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="141" y1="29" x2="149" y2="16" stroke="rgba(162,220,240,0.45)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="171" y1="59" x2="184" y2="52" stroke="rgba(184,229,245,0.4)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="182" y1="100" x2="197" y2="100" stroke="rgba(130,208,234,0.45)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="171" y1="141" x2="184" y2="149" stroke="rgba(90,185,222,0.4)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="141" y1="171" x2="149" y2="184" stroke="rgba(61,156,204,0.45)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="100" y1="182" x2="100" y2="197" stroke="rgba(45,125,181,0.5)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="59" y1="171" x2="52" y2="184" stroke="rgba(38,79,138,0.45)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="29" y1="141" x2="16" y2="149" stroke="rgba(30,58,110,0.5)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="18" y1="100" x2="3" y2="100" stroke="rgba(26,45,85,0.45)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="29" y1="59" x2="16" y2="52" stroke="rgba(31,63,114,0.4)" strokeWidth="7" strokeLinecap="round" />
-            <line x1="59" y1="29" x2="52" y2="16" stroke="rgba(66,114,165,0.45)" strokeWidth="7" strokeLinecap="round" />
+          <svg viewBox="0 0 200 200" className={`home-hero-spinner${isRunning ? ' home-hero-spinner--active' : ''}`}>
+            <line x1="100" y1="18" x2="100" y2="3" stroke="rgba(126,204,232,0.5)" strokeWidth="9" strokeLinecap="round" />
+            <line x1="141" y1="29" x2="149" y2="16" stroke="rgba(162,220,240,0.45)" strokeWidth="9" strokeLinecap="round" />
+            <line x1="171" y1="59" x2="184" y2="52" stroke="rgba(184,229,245,0.4)" strokeWidth="9" strokeLinecap="round" />
+            <line x1="182" y1="100" x2="197" y2="100" stroke="rgba(130,208,234,0.45)" strokeWidth="9" strokeLinecap="round" />
+            <line x1="171" y1="141" x2="184" y2="149" stroke="rgba(90,185,222,0.4)" strokeWidth="9" strokeLinecap="round" />
+            <line x1="141" y1="171" x2="149" y2="184" stroke="rgba(61,156,204,0.45)" strokeWidth="9" strokeLinecap="round" />
+            <line x1="100" y1="182" x2="100" y2="197" stroke="rgba(45,125,181,0.5)" strokeWidth="9" strokeLinecap="round" />
+            <line x1="59" y1="171" x2="52" y2="184" stroke="rgba(38,79,138,0.45)" strokeWidth="9" strokeLinecap="round" />
+            <line x1="29" y1="141" x2="16" y2="149" stroke="rgba(30,58,110,0.5)" strokeWidth="9" strokeLinecap="round" />
+            <line x1="18" y1="100" x2="3" y2="100" stroke="rgba(26,45,85,0.45)" strokeWidth="9" strokeLinecap="round" />
+            <line x1="29" y1="59" x2="16" y2="52" stroke="rgba(31,63,114,0.4)" strokeWidth="9" strokeLinecap="round" />
+            <line x1="59" y1="29" x2="52" y2="16" stroke="rgba(66,114,165,0.45)" strokeWidth="9" strokeLinecap="round" />
           </svg>
           {isRunning ? (
             <>

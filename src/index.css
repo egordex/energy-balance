@@ -247,11 +247,10 @@ body {
   position: absolute;
   width: 260px;
   height: 260px;
-  animation: hero-spin 20s linear infinite;
 }
 
-.home-hero-spinner.spinning-fast {
-  animation-duration: 4s;
+.home-hero-spinner.home-hero-spinner--active {
+  animation: hero-spin 14s linear infinite;
 }
 
 @keyframes hero-spin {
