@@ -52,7 +52,7 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
     <div className="fullscreen-form">
       <form className="session-form" onSubmit={handleSubmit}>
         <header className="page-header page-header--stack">
-          <h2 className="page-header-title">Как прошла сессия?</h2>
+          <h2 className="page-header-title">Как поработали?</h2>
           <p className="page-header-sub">Длительность: <strong>{formatDuration(elapsed)}</strong></p>
         </header>
 
