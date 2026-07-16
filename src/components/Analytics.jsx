@@ -6,12 +6,32 @@ import {
   computeInsights,
   generateInsightTexts,
   computePersonalNorm,
+  computeWorkTypeStats,
   computeStreak,
   formatSeconds,
 } from '../utils/analytics'
 
 function formatNormRange(norm) {
   return norm.maxHours === null ? `${norm.minHours}+ ч` : `${norm.minHours}–${norm.maxHours} ч`
+}
+
+function WorkTypeRow({ workType, avgState, totalSeconds, isTop }) {
+  const pct = ((avgState - 1) / 4) * 100
+  return (
+    <div className={`worktype-row${isTop ? ' worktype-row--top' : ''}`}>
+      <div className="worktype-row-top">
+        <span className="worktype-name">
+          {workType}
+          {isTop && <span className="worktype-badge">Больше всего нагружает</span>}
+        </span>
+        <span className="worktype-state">{avgState.toFixed(1)}/5</span>
+      </div>
+      <div className="state-bar">
+        <div className="state-bar-fill" style={{ width: `${pct}%` }} />
+      </div>
+      <span className="worktype-time">{formatSeconds(totalSeconds)} суммарно</span>
+    </div>
+  )
 }
 
 function StatCard({ label, value, sub }) {
@@ -38,16 +58,19 @@ function StateBar({ value }) {
 }
 
 export default function Analytics() {
-  const { stats, insights, insightTexts, hasData, streak, norm } = useMemo(() => {
+  const { stats, insights, insightTexts, hasData, streak, norm, workTypeStats } = useMemo(() => {
     const all = loadSessions()
     const sessions = getSessionsLast30Days(all)
-    if (sessions.length === 0) return { hasData: false, stats: null, insights: null, insightTexts: [], streak: 0, norm: null }
+    if (sessions.length === 0) {
+      return { hasData: false, stats: null, insights: null, insightTexts: [], streak: 0, norm: null, workTypeStats: [] }
+    }
     const stats = computeStats(sessions)
     const insights = computeInsights(sessions)
     const insightTexts = generateInsightTexts(insights)
     const streak = computeStreak(all)
     const norm = computePersonalNorm(sessions)
-    return { hasData: true, stats, insights, insightTexts, streak, norm }
+    const workTypeStats = computeWorkTypeStats(sessions)
+    return { hasData: true, stats, insights, insightTexts, streak, norm, workTypeStats }
   }, [])
 
   if (!hasData) {
@@ -103,6 +126,17 @@ export default function Analytics() {
           <StateBar value={stats.avgState} />
         </div>
       </div>
+
+      {workTypeStats.length > 0 && (
+        <div className="insights-section">
+          <h2 className="section-title">Нагрузка по типам работы</h2>
+          <div className="worktype-list">
+            {workTypeStats.map((t, i) => (
+              <WorkTypeRow key={t.workType} {...t} isTop={i === 0 && workTypeStats.length > 1} />
+            ))}
+          </div>
+        </div>
+      )}
 
       {insightTexts.length > 0 && (
         <div className="insights-section">

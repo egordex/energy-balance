@@ -1517,6 +1517,68 @@ input[type="date"].select {
   line-height: 1.5;
 }
 
+.worktype-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.worktype-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.worktype-row--top {
+  border-color: rgba(201, 64, 64, 0.35);
+  background: rgba(201, 64, 64, 0.04);
+}
+
+.worktype-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.worktype-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.worktype-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--danger);
+  background: rgba(201, 64, 64, 0.1);
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.worktype-state {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.worktype-time {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
 .no-state-hint {
   font-size: 13px;
   color: var(--text-dim);

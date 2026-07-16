@@ -62,6 +62,26 @@ export function computePersonalNorm(sessions) {
   }
 }
 
+// Which activity types correlate with the lowest wellbeing (most draining first)
+export function computeWorkTypeStats(sessions) {
+  const byType = {}
+  for (const s of sessions) {
+    if (s.wellbeing == null) continue
+    if (!byType[s.workType]) byType[s.workType] = { wellbeings: [], totalSeconds: 0 }
+    byType[s.workType].wellbeings.push(s.wellbeing)
+    byType[s.workType].totalSeconds += s.durationSeconds
+  }
+  return Object.entries(byType)
+    .map(([workType, d]) => ({
+      workType,
+      avgState: d.wellbeings.reduce((a, b) => a + b, 0) / d.wellbeings.length,
+      totalSeconds: d.totalSeconds,
+      count: d.wellbeings.length,
+    }))
+    .filter((t) => t.count >= 2)
+    .sort((a, b) => a.avgState - b.avgState)
+}
+
 export function computeInsights(sessions) {
   const byDay = groupByDay(sessions)
   const days = Object.entries(byDay)
