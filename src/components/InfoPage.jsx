@@ -46,20 +46,19 @@ export default function InfoPage() {
       <div className="info-divider" />
 
       <div className="info-section">
-        <h2 className="info-section-title">Разработка приложения</h2>
+        <h2 className="info-section-title">Разработано в StandApps</h2>
         <div className="info-text">
-          <p>«StandApps – приложения под конкретную идею, книгу, концепцию»</p>
+          <p>Приложения под конкретную идею, книгу, концепцию</p>
         </div>
+        <a
+          href="https://standapp.pro/apps?utm_source=money-budgt&utm_medium=footer&utm_campaign=cross-promo"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-support"
+        >
+          Заказать веб-приложение
+        </a>
       </div>
-
-      <a
-        href="https://standapp.pro/apps?utm_source=money-budgt&utm_medium=footer&utm_campaign=cross-promo"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn-support"
-      >
-        Заказать веб-приложение
-      </a>
     </div>
   )
 }
