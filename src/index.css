@@ -1132,33 +1132,6 @@ body {
   margin: 4px 0;
 }
 
-.info-author {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.info-author-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.info-tg-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--accent);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition: opacity 0.15s;
-}
-
-.info-tg-link:hover {
-  opacity: 0.8;
-}
-
 .btn-support {
   display: flex;
   align-items: center;
