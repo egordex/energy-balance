@@ -1,7 +1,7 @@
 export default function InfoPage() {
   return (
     <div className="info-page">
-      <header className="page-header page-header--static">
+      <header className="page-header">
         <h1 className="page-header-title">О приложении</h1>
       </header>
 

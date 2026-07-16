@@ -87,9 +87,6 @@ body {
 
 /* Page header (iOS-style sticky) */
 .page-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -97,9 +94,6 @@ body {
   margin: 0 -16px;
   padding-left: 16px;
   padding-right: 16px;
-  background: var(--bg);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
   flex-shrink: 0;
 }
 
@@ -110,9 +104,6 @@ body {
   letter-spacing: -0.02em;
 }
 
-.page-header--static {
-  position: static;
-}
 
 .page-header--stack {
   flex-direction: column;
