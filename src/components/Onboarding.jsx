@@ -3,7 +3,6 @@ import { useRef, useState } from 'react'
 function GaugeIllustration() {
   return (
     <svg viewBox="0 0 160 160" width="140" height="140" fill="none">
-      <circle cx="80" cy="86" r="58" fill="rgba(58,124,184,0.1)" />
       <path d="M32 96a48 48 0 1 1 96 0" stroke="rgba(43,92,138,0.18)" strokeWidth="12" strokeLinecap="round" />
       <path d="M32 96a48 48 0 0 1 70-42.7" stroke="#2b5c8a" strokeWidth="12" strokeLinecap="round" />
       <circle cx="80" cy="96" r="7" fill="#1e4a73" />
@@ -16,7 +15,6 @@ function GaugeIllustration() {
 function InsightsIllustration() {
   return (
     <svg viewBox="0 0 160 160" width="140" height="140" fill="none">
-      <circle cx="80" cy="80" r="58" fill="rgba(58,124,184,0.1)" />
       <rect x="42" y="88" width="16" height="38" rx="6" fill="rgba(43,92,138,0.35)" />
       <rect x="66" y="70" width="16" height="56" rx="6" fill="#3a7cb8" />
       <rect x="90" y="52" width="16" height="74" rx="6" fill="#2b5c8a" />
@@ -29,7 +27,6 @@ function InsightsIllustration() {
 function RoutineIllustration() {
   return (
     <svg viewBox="0 0 160 160" width="140" height="140" fill="none">
-      <circle cx="80" cy="80" r="58" fill="rgba(58,124,184,0.1)" />
       <circle cx="78" cy="82" r="42" fill="#fff" stroke="#2b5c8a" strokeWidth="7" />
       <line x1="78" y1="82" x2="78" y2="54" stroke="#2b5c8a" strokeWidth="7" strokeLinecap="round" />
       <line x1="78" y1="82" x2="98" y2="94" stroke="#3a7cb8" strokeWidth="7" strokeLinecap="round" />
