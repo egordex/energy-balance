@@ -91,6 +91,16 @@ export default function App() {
   })()
 
   useEffect(() => {
+    const splash = document.getElementById('splash')
+    if (!splash) return
+    const timer = setTimeout(() => {
+      splash.classList.add('splash-hidden')
+      setTimeout(() => splash.remove(), 400)
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
     if (view === VIEW.RUNNING) {
       intervalRef.current = setInterval(() => {
         const secs = Math.floor((Date.now() - startTime) / 1000)

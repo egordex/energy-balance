@@ -11,8 +11,39 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
+    <style>
+      #splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #1a3d5c 0%, #2b5c8a 50%, #3a7cb8 100%);
+        transition: opacity 0.4s ease;
+      }
+      #splash.splash-hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #splash-title {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: #fff;
+        text-align: center;
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+        animation: splash-pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes splash-pulse {
+        0%, 100% { opacity: 0.85; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.03); }
+      }
+    </style>
   </head>
   <body>
+    <div id="splash"><div id="splash-title">Work Energy<br />Balance</div></div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
