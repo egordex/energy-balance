@@ -1,14 +1,19 @@
 import { useRef, useState } from 'react'
 
-function GaugeIllustration() {
+function AtlasIllustration() {
   return (
     <svg viewBox="0 0 160 160" width="140" height="140" fill="none">
-      <circle cx="80" cy="86" r="58" fill="rgba(58,124,184,0.1)" />
-      <path d="M32 96a48 48 0 1 1 96 0" stroke="rgba(43,92,138,0.18)" strokeWidth="12" strokeLinecap="round" />
-      <path d="M32 96a48 48 0 0 1 70-42.7" stroke="#2b5c8a" strokeWidth="12" strokeLinecap="round" />
-      <circle cx="80" cy="96" r="7" fill="#1e4a73" />
-      <line x1="80" y1="96" x2="106" y2="70" stroke="#1e4a73" strokeWidth="6" strokeLinecap="round" />
-      <circle cx="106" cy="70" r="6" fill="#d99a4e" />
+      <circle cx="80" cy="80" r="58" fill="rgba(58,124,184,0.1)" />
+      <rect x="52" y="136" width="56" height="10" rx="3" fill="#1e4a73" />
+      <rect x="58" y="86" width="44" height="12" rx="3" fill="#1e4a73" />
+      <rect x="68" y="96" width="24" height="42" fill="#2b5c8a" />
+      <line x1="76" y1="100" x2="76" y2="134" stroke="rgba(255,255,255,0.35)" strokeWidth="2" />
+      <line x1="80" y1="100" x2="80" y2="134" stroke="rgba(255,255,255,0.35)" strokeWidth="2" />
+      <line x1="84" y1="100" x2="84" y2="134" stroke="rgba(255,255,255,0.35)" strokeWidth="2" />
+      <ellipse cx="80" cy="58" rx="36" ry="12" stroke="#d99a4e" strokeWidth="4" opacity="0.85" transform="rotate(-16 80 58)" />
+      <circle cx="80" cy="58" r="24" fill="#3a7cb8" />
+      <ellipse cx="71" cy="49" rx="8" ry="5" fill="rgba(255,255,255,0.35)" />
+      <circle cx="114" cy="50" r="5" fill="#d99a4e" />
     </svg>
   )
 }
@@ -17,32 +22,50 @@ function InsightsIllustration() {
   return (
     <svg viewBox="0 0 160 160" width="140" height="140" fill="none">
       <circle cx="80" cy="80" r="58" fill="rgba(58,124,184,0.1)" />
-      <rect x="42" y="88" width="16" height="38" rx="6" fill="rgba(43,92,138,0.35)" />
-      <rect x="66" y="70" width="16" height="56" rx="6" fill="#3a7cb8" />
-      <rect x="90" y="52" width="16" height="74" rx="6" fill="#2b5c8a" />
-      <circle cx="104" cy="46" r="16" fill="none" stroke="#d99a4e" strokeWidth="6" />
-      <line x1="115" y1="57" x2="124" y2="66" stroke="#d99a4e" strokeWidth="6" strokeLinecap="round" />
+      <g fill="#d99a4e">
+        <ellipse cx="46" cy="118" rx="9" ry="4" transform="rotate(-55 46 118)" />
+        <ellipse cx="40" cy="104" rx="9" ry="4" transform="rotate(-75 40 104)" />
+        <ellipse cx="38" cy="88" rx="9" ry="4" transform="rotate(-95 38 88)" />
+        <ellipse cx="42" cy="72" rx="9" ry="4" transform="rotate(-115 42 72)" />
+        <ellipse cx="114" cy="118" rx="9" ry="4" transform="rotate(55 114 118)" />
+        <ellipse cx="120" cy="104" rx="9" ry="4" transform="rotate(75 120 104)" />
+        <ellipse cx="122" cy="88" rx="9" ry="4" transform="rotate(95 122 88)" />
+        <ellipse cx="118" cy="72" rx="9" ry="4" transform="rotate(115 118 72)" />
+      </g>
+      <rect x="58" y="88" width="14" height="30" rx="5" fill="rgba(43,92,138,0.35)" />
+      <rect x="78" y="72" width="14" height="46" rx="5" fill="#3a7cb8" />
+      <rect x="98" y="56" width="14" height="62" rx="5" fill="#2b5c8a" />
     </svg>
   )
 }
 
-function RoutineIllustration() {
+function SundialIllustration() {
   return (
     <svg viewBox="0 0 160 160" width="140" height="140" fill="none">
       <circle cx="80" cy="80" r="58" fill="rgba(58,124,184,0.1)" />
-      <circle cx="78" cy="82" r="42" fill="#fff" stroke="#2b5c8a" strokeWidth="7" />
-      <line x1="78" y1="82" x2="78" y2="54" stroke="#2b5c8a" strokeWidth="7" strokeLinecap="round" />
-      <line x1="78" y1="82" x2="98" y2="94" stroke="#3a7cb8" strokeWidth="7" strokeLinecap="round" />
-      <circle cx="78" cy="82" r="5" fill="#1e4a73" />
-      <circle cx="120" cy="112" r="18" fill="#d99a4e" />
-      <path d="M112 112l5 6 11-13" stroke="#fff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <circle cx="80" cy="88" r="44" fill="#fff" stroke="#2b5c8a" strokeWidth="6" />
+      <g stroke="#3a7cb8" strokeWidth="3" strokeLinecap="round" opacity="0.5">
+        <line x1="80" y1="48" x2="80" y2="56" />
+        <line x1="80" y1="120" x2="80" y2="128" />
+        <line x1="40" y1="88" x2="48" y2="88" />
+        <line x1="112" y1="88" x2="120" y2="88" />
+        <line x1="51" y1="59" x2="57" y2="65" />
+        <line x1="103" y1="111" x2="109" y2="117" />
+        <line x1="109" y1="59" x2="103" y2="65" />
+        <line x1="57" y1="111" x2="51" y2="117" />
+      </g>
+      <path d="M80 88L80 50 106 84Z" fill="rgba(30,74,115,0.22)" />
+      <path d="M80 88L62 46 98 46Z" fill="#1e4a73" />
+      <circle cx="80" cy="88" r="5" fill="#1e4a73" />
+      <circle cx="118" cy="118" r="17" fill="#d99a4e" />
+      <path d="M110 118l5 6 11-13" stroke="#fff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
     </svg>
   )
 }
 
 const SLIDES = [
   {
-    Illustration: GaugeIllustration,
+    Illustration: AtlasIllustration,
     title: 'Зачем это нужно?',
     text: 'У каждого есть предел глубокой работы в день — но мы его не знаем и регулярно перегружаемся.',
   },
@@ -52,7 +75,7 @@ const SLIDES = [
     text: 'Свою норму, самые энергозатратные задачи и дни, когда вы продуктивнее всего.',
   },
   {
-    Illustration: RoutineIllustration,
+    Illustration: SundialIllustration,
     title: 'Как это работает',
     text: 'Отмечайте сессии — приложение само найдёт вашу устойчивую норму работы.',
   },
