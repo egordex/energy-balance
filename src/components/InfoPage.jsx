@@ -6,6 +6,21 @@ export default function InfoPage() {
       </header>
 
       <div className="info-section">
+        <h2 className="info-section-title">Основано на книге</h2>
+        <div className="info-text">
+          <p>«Атлант устал: как отдыхать от ответственности», Екатерина Коннова</p>
+        </div>
+        <a
+          href="https://www.mann-ivanov-ferber.ru/catalog/product/witherwill-trend-obshhestva-ustalosti-ili-kak-otdyxat-ot-otvetstvennosti/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-support"
+        >
+          Скачать книгу
+        </a>
+      </div>
+
+      <div className="info-section">
         <h2 className="info-section-title">Зачем это нужно?</h2>
         <div className="info-text">
           <p>
@@ -41,21 +56,6 @@ export default function InfoPage() {
             Цель — не работать больше, а работать устойчиво: найти свою норму и не выходить за неё системно.
           </p>
         </div>
-      </div>
-
-      <div className="info-section">
-        <h2 className="info-section-title">Основано на книге</h2>
-        <div className="info-text">
-          <p>«Атлант устал: как отдыхать от ответственности», Екатерина Коннова</p>
-        </div>
-        <a
-          href="https://www.mann-ivanov-ferber.ru/catalog/product/witherwill-trend-obshhestva-ustalosti-ili-kak-otdyxat-ot-otvetstvennosti/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-support"
-        >
-          Скачать книгу
-        </a>
       </div>
 
       <div className="info-divider" />
