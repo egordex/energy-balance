@@ -238,6 +238,7 @@ body {
   position: absolute;
   width: 260px;
   height: 260px;
+  overflow: visible;
   animation: hero-pulse 3.5s ease-in-out infinite;
   transform-origin: center;
 }
