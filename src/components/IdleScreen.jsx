@@ -160,7 +160,7 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
         <div className="home-card-actions">
           {isRunning ? (
             <button className="btn btn-stop" onClick={onStop}>
-              Завершить сессию
+              Завершить
             </button>
           ) : (
             <>

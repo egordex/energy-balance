@@ -150,7 +150,7 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginTop: 'auto' }}>
           <button type="submit" className="btn btn-save" disabled={!canSave}>
-            Сохранить сессию
+            Сохранить
           </button>
           <button
             type="button"
