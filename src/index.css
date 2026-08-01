@@ -1431,8 +1431,8 @@ input[type="date"].select {
   background: var(--surface);
   border-top: 1px solid var(--border);
   box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
-  min-height: 72px;
-  padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+  min-height: 80px;
+  padding: 10px 0 max(20px, env(safe-area-inset-bottom, 20px));
   flex-shrink: 0;
 }
 
