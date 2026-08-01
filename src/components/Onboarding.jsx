@@ -1,47 +1,60 @@
 import { useRef, useState } from 'react'
 
+function GaugeIllustration() {
+  return (
+    <svg viewBox="0 0 160 160" width="140" height="140" fill="none">
+      <circle cx="80" cy="86" r="58" fill="rgba(58,124,184,0.1)" />
+      <path d="M32 96a48 48 0 1 1 96 0" stroke="rgba(43,92,138,0.18)" strokeWidth="12" strokeLinecap="round" />
+      <path d="M32 96a48 48 0 0 1 70-42.7" stroke="#2b5c8a" strokeWidth="12" strokeLinecap="round" />
+      <circle cx="80" cy="96" r="7" fill="#1e4a73" />
+      <line x1="80" y1="96" x2="106" y2="70" stroke="#1e4a73" strokeWidth="6" strokeLinecap="round" />
+      <circle cx="106" cy="70" r="6" fill="#d99a4e" />
+    </svg>
+  )
+}
+
+function InsightsIllustration() {
+  return (
+    <svg viewBox="0 0 160 160" width="140" height="140" fill="none">
+      <circle cx="80" cy="80" r="58" fill="rgba(58,124,184,0.1)" />
+      <rect x="42" y="88" width="16" height="38" rx="6" fill="rgba(43,92,138,0.35)" />
+      <rect x="66" y="70" width="16" height="56" rx="6" fill="#3a7cb8" />
+      <rect x="90" y="52" width="16" height="74" rx="6" fill="#2b5c8a" />
+      <circle cx="104" cy="46" r="16" fill="none" stroke="#d99a4e" strokeWidth="6" />
+      <line x1="115" y1="57" x2="124" y2="66" stroke="#d99a4e" strokeWidth="6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function RoutineIllustration() {
+  return (
+    <svg viewBox="0 0 160 160" width="140" height="140" fill="none">
+      <circle cx="80" cy="80" r="58" fill="rgba(58,124,184,0.1)" />
+      <circle cx="78" cy="82" r="42" fill="#fff" stroke="#2b5c8a" strokeWidth="7" />
+      <line x1="78" y1="82" x2="78" y2="54" stroke="#2b5c8a" strokeWidth="7" strokeLinecap="round" />
+      <line x1="78" y1="82" x2="98" y2="94" stroke="#3a7cb8" strokeWidth="7" strokeLinecap="round" />
+      <circle cx="78" cy="82" r="5" fill="#1e4a73" />
+      <circle cx="120" cy="112" r="18" fill="#d99a4e" />
+      <path d="M112 112l5 6 11-13" stroke="#fff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  )
+}
+
 const SLIDES = [
   {
-    icon: '🧠',
+    Illustration: GaugeIllustration,
     title: 'Зачем это нужно?',
-    body: (
-      <>
-        <p>
-          <strong>Work Energy Balance</strong> — это не таск-менеджер и не список дел. Это инструмент для понимания себя.
-        </p>
-        <p>
-          У каждого человека есть предел глубокой интеллектуальной работы в день. Проблема в том, что мы его не знаем — и регулярно перегружаемся, а потом удивляемся усталости и снижению качества.
-        </p>
-      </>
-    ),
+    text: 'У каждого есть предел глубокой работы в день — но мы его не знаем и регулярно перегружаемся.',
   },
   {
-    icon: '📊',
+    Illustration: InsightsIllustration,
     title: 'Что вы узнаете',
-    body: (
-      <ul>
-        <li>Сколько часов глубокой работы вы реально способны выполнять без ухудшения состояния</li>
-        <li>Какие типы деятельности нагружают вас больше всего</li>
-        <li>После какого объёма работы начинается перегрузка</li>
-        <li>В какие дни недели вы чувствуете себя лучше всего</li>
-      </ul>
-    ),
+    text: 'Свою норму, самые энергозатратные задачи и дни, когда вы продуктивнее всего.',
   },
   {
-    icon: '⏱️',
+    Illustration: RoutineIllustration,
     title: 'Как это работает',
-    body: (
-      <>
-        <ol>
-          <li>Запускайте таймер на время работы или записывайте сессии вручную</li>
-          <li>После каждой сессии отмечайте тип, глубину и своё состояние</li>
-          <li>Через 1–2 недели загляните в аналитику — приложение покажет вашу персональную норму</li>
-        </ol>
-        <p className="onboarding-motto">
-          Цель — не работать больше, а работать устойчиво: найти свою норму и не выходить за неё системно.
-        </p>
-      </>
-    ),
+    text: 'Отмечайте сессии — приложение само найдёт вашу устойчивую норму работы.',
   },
 ]
 
@@ -84,11 +97,12 @@ export default function Onboarding({ onFinish }) {
           className="onboarding-track"
           style={{ transform: `translateX(-${index * (100 / SLIDES.length)}%)`, width: `${SLIDES.length * 100}%` }}
         >
-          {SLIDES.map((slide, i) => (
+          {SLIDES.map(({ Illustration, title, text }, i) => (
             <div className="onboarding-slide" style={{ width: `${100 / SLIDES.length}%` }} key={i}>
-              <span className="onboarding-icon">{slide.icon}</span>
-              <h2 className="onboarding-title">{slide.title}</h2>
-              <div className="onboarding-text">{slide.body}</div>
+              <div className="onboarding-illustration-wrap">
+                <div className="onboarding-blob" />
+                <Illustration />
+              </div>
             </div>
           ))}
         </div>
@@ -98,6 +112,11 @@ export default function Onboarding({ onFinish }) {
         {SLIDES.map((_, i) => (
           <span key={i} className={`onboarding-dot${i === index ? ' active' : ''}`} />
         ))}
+      </div>
+
+      <div className="onboarding-caption" key={index}>
+        <h2 className="onboarding-title">{SLIDES[index].title}</h2>
+        <p className="onboarding-text">{SLIDES[index].text}</p>
       </div>
 
       <div className="onboarding-footer">
