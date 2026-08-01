@@ -18,41 +18,68 @@ function loadSessions() {
   return JSON.parse(localStorage.getItem('wct_sessions') || '[]')
 }
 
+function NavItem({ active, disabled, onClick, label, icon }) {
+  const [pressed, setPressed] = useState(false)
+
+  return (
+    <button
+      className={`nav-item${active ? ' active' : ''}${disabled ? ' nav-item--disabled' : ''}${pressed ? ' nav-item--pressed' : ''}`}
+      onClick={onClick}
+      onPointerDown={() => setPressed(true)}
+      onPointerUp={() => setPressed(false)}
+      onPointerCancel={() => setPressed(false)}
+      onPointerLeave={() => setPressed(false)}
+    >
+      <span className={`nav-icon-pill${active ? ' active' : ''}`}>
+        <span className="nav-icon-bounce" key={active ? 'on' : 'off'}>
+          {icon}
+        </span>
+      </span>
+      <span>{label}</span>
+    </button>
+  )
+}
+
 function NavBar({ page, onNavigate, isRunning }) {
   return (
     <nav className="nav-bar">
-      <button
-        className={`nav-item${page === 'home' ? ' active' : ''}`}
+      <NavItem
+        active={page === 'home'}
         onClick={() => onNavigate('home')}
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-        <span>Главная</span>
-      </button>
-      <button
-        className={`nav-item${page === 'analytics' ? ' active' : ''}${isRunning ? ' nav-item--disabled' : ''}`}
+        label="Главная"
+        icon={
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        }
+      />
+      <NavItem
+        active={page === 'analytics'}
+        disabled={isRunning}
         onClick={() => onNavigate('analytics')}
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="18" y1="20" x2="18" y2="10"/>
-          <line x1="12" y1="20" x2="12" y2="4"/>
-          <line x1="6" y1="20" x2="6" y2="14"/>
-        </svg>
-        <span>Аналитика</span>
-      </button>
-      <button
-        className={`nav-item${page === 'info' ? ' active' : ''}${isRunning ? ' nav-item--disabled' : ''}`}
+        label="Аналитика"
+        icon={
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        }
+      />
+      <NavItem
+        active={page === 'info'}
+        disabled={isRunning}
         onClick={() => onNavigate('info')}
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="16" x2="12" y2="12"/>
-          <line x1="12" y1="8" x2="12.01" y2="8"/>
-        </svg>
-        <span>Инфо</span>
-      </button>
+        label="Инфо"
+        icon={
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        }
+      />
     </nav>
   )
 }
