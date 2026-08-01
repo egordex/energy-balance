@@ -1155,7 +1155,11 @@ body {
 
 .onboarding-blob {
   position: absolute;
-  inset: -20px;
+  top: 50%;
+  left: 50%;
+  width: 460px;
+  height: 460px;
+  transform: translate(-50%, -50%);
   z-index: 0;
   border-radius: 50%;
   background:
