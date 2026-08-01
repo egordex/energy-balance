@@ -7,6 +7,7 @@ import Analytics from './components/Analytics'
 import InfoPage from './components/InfoPage'
 import HistoryPage from './components/HistoryPage'
 import InstallPrompt from './components/InstallPrompt'
+import Onboarding from './components/Onboarding'
 import { playStart, playReminder, playStop } from './utils/sound'
 import { formatRecoveryRange } from './utils/analytics'
 
@@ -75,6 +76,7 @@ export default function App() {
   const [startTime, setStartTime] = useState(null)
   const [elapsed, setElapsed] = useState(0)
   const [showInstall, setShowInstall] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('wct_onboarding_shown'))
   const [toast, setToast] = useState(null)
   const [sessions, setSessions] = useState(loadSessions)
   const intervalRef = useRef(null)
@@ -196,6 +198,15 @@ export default function App() {
     if (view === VIEW.RUNNING) { showNavHint(); return }
     if (view === VIEW.FORM || view === VIEW.MANUAL) return
     setPage(target)
+  }
+
+  function finishOnboarding() {
+    localStorage.setItem('wct_onboarding_shown', '1')
+    setShowOnboarding(false)
+  }
+
+  if (showOnboarding) {
+    return <Onboarding onFinish={finishOnboarding} />
   }
 
   return (
