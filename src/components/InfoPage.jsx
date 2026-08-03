@@ -17,7 +17,7 @@ export default function InfoPage() {
         </div>
         <h2 className="info-section-title">Основано на книге</h2>
         <div className="info-text info-book-text">
-          <p>«Атлант устал: как отдыхать от ответственности», Екатерина Коннова</p>
+          <p>«Атлант устал: как&nbsp;отдыхать от ответственности», Екатерина Коннова</p>
         </div>
         <a
           href="https://www.mann-ivanov-ferber.ru/catalog/product/witherwill-trend-obshhestva-ustalosti-ili-kak-otdyxat-ot-otvetstvennosti/"
