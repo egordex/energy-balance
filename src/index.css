@@ -1296,6 +1296,19 @@ body {
   color: var(--accent);
 }
 
+.info-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  color: var(--accent);
+  vertical-align: middle;
+}
+
 .info-text {
   display: flex;
   flex-direction: column;
@@ -1344,6 +1357,17 @@ body {
   text-decoration: none;
   transition: background 0.15s, border-color 0.15s;
   cursor: pointer;
+}
+
+.btn-telegram {
+  background: #229ed9;
+  border-color: #229ed9;
+  color: #fff;
+}
+
+.btn-telegram:hover {
+  background: #1c86b8;
+  border-color: #1c86b8;
 }
 
 .btn-support:hover {
