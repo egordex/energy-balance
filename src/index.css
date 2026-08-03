@@ -1160,8 +1160,8 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 460px;
-  height: 460px;
+  width: 320px;
+  height: 320px;
   transform: translate(-50%, -50%);
   z-index: -1;
   border-radius: 50%;
