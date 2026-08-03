@@ -1258,7 +1258,6 @@ body {
   z-index: 1;
   width: 112px;
   transform: rotate(7deg);
-  filter: drop-shadow(0 12px 20px rgba(30, 45, 74, 0.35));
 }
 
 .info-book-clip {
@@ -1266,6 +1265,7 @@ body {
   overflow: hidden;
   border-radius: 10px;
   line-height: 0;
+  box-shadow: 0 12px 20px rgba(30, 45, 74, 0.35);
 }
 
 .info-book-img {
