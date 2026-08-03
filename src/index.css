@@ -1246,6 +1246,27 @@ body {
   gap: 12px;
 }
 
+.info-book-section {
+  position: relative;
+  padding-top: 24px;
+}
+
+.info-book-cover {
+  position: absolute;
+  top: -34px;
+  right: 20px;
+  z-index: 1;
+  width: 112px;
+  height: auto;
+  border-radius: 10px;
+  transform: rotate(7deg);
+  filter: drop-shadow(0 12px 20px rgba(30, 45, 74, 0.35));
+}
+
+.info-book-text {
+  max-width: 62%;
+}
+
 .info-section-title {
   font-size: 14px;
   font-weight: 600;
