@@ -1251,16 +1251,27 @@ body {
   padding-top: 24px;
 }
 
-.info-book-cover {
+.info-book-shadow {
   position: absolute;
-  top: -34px;
+  top: -26px;
   right: 20px;
   z-index: 1;
   width: 112px;
-  height: auto;
-  border-radius: 10px;
   transform: rotate(7deg);
   filter: drop-shadow(0 12px 20px rgba(30, 45, 74, 0.35));
+}
+
+.info-book-clip {
+  display: block;
+  overflow: hidden;
+  border-radius: 10px;
+  line-height: 0;
+}
+
+.info-book-img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .info-book-text {

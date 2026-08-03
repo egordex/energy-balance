@@ -6,11 +6,15 @@ export default function InfoPage() {
       </header>
 
       <div className="info-section info-book-section">
-        <img
-          src="/book-cover-atlant.png"
-          alt="«Атлант устал», Екатерина Коннова"
-          className="info-book-cover"
-        />
+        <div className="info-book-shadow">
+          <div className="info-book-clip">
+            <img
+              src="/book-cover-atlant.png"
+              alt="«Атлант устал», Екатерина Коннова"
+              className="info-book-img"
+            />
+          </div>
+        </div>
         <h2 className="info-section-title">Основано на книге</h2>
         <div className="info-text info-book-text">
           <p>«Атлант устал: как отдыхать от ответственности», Екатерина Коннова</p>
