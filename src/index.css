@@ -1284,6 +1284,18 @@ body {
   color: var(--text);
 }
 
+.info-section-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+.info-section-link:hover {
+  color: var(--accent);
+}
+
 .info-text {
   display: flex;
   flex-direction: column;
