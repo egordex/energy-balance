@@ -201,16 +201,19 @@ export function computeStreak(sessions) {
   return streak
 }
 
+// Below this, the "+1" in the formula would suggest an hour of recovery after a short session
+const RECOVERY_MIN_DEEP_SECONDS = 3600
+
 // Recovery norm (Коннова, "Атлант устал"): часы восстановления = глубокая работа / 2 + 1
 export function computeRecoveryRange(deepSeconds) {
-  if (deepSeconds <= 0) return null
+  if (deepSeconds < RECOVERY_MIN_DEEP_SECONDS) return null
   const deepHours = deepSeconds / 3600
   const min = Math.round((deepHours / 2 + 1) * 2) / 2
   return { min, max: min + 1 }
 }
 
 function formatHours(h) {
-  return Number.isInteger(h) ? String(h) : h.toFixed(1)
+  return Number.isInteger(h) ? String(h) : h.toFixed(1).replace('.', ',')
 }
 
 export function formatRecoveryRange(deepSeconds) {

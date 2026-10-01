@@ -184,7 +184,7 @@ export default function App() {
         .filter((s) => s.startedAt.slice(0, 10) === todayStr && s.depth === 'deep')
         .reduce((sum, s) => sum + s.durationSeconds, 0)
       const range = formatRecoveryRange(todayDeepSeconds)
-      showToast(range ? `Норма восстановления: ${range}` : undefined)
+      showToast(range ? `Дальше ${range} без сложных задач` : undefined)
     } else {
       showToast()
     }

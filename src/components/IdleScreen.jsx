@@ -127,7 +127,9 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
             {recoveryRange && (
               <div className="home-recovery-hint">
                 <div className="home-recovery-hint-row">
-                  <span>Норма восстановления сегодня: {recoveryRange}</span>
+                  <span>
+                    После {formatSeconds(summary.todayDeepSeconds)} глубокой работы: {recoveryRange} без&nbsp;сложных задач до&nbsp;конца дня
+                  </span>
                   <button
                     type="button"
                     className="home-recovery-tip-btn"
@@ -141,7 +143,7 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
                 </div>
                 {showRecoveryTip && (
                   <p className="home-recovery-tip-text">
-                    Норма = часы глубокой работы ÷ 2 + 1. Чем больше глубокой сосредоточенной работы, тем больше времени нужно на восстановление, чтобы не накапливать усталость. По методике Екатерины Конновой («Атлант устал»).
+                    Время восстановления = часы глубокой работы ÷ 2 + 1. Это минимум лёгкой активности или сна до&nbsp;следующего дня, чтобы не&nbsp;накапливать усталость. Показываем, если за&nbsp;день набрался хотя бы 1&nbsp;час глубокой работы. По&nbsp;методике Екатерины Конновой («Атлант устал»).
                   </p>
                 )}
               </div>
