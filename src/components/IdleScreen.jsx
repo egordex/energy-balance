@@ -105,13 +105,15 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
           <div className="home-summary">
             <div className="home-summary-row">
               <div className="home-summary-item">
-                <span className="home-summary-value">{formatSeconds(summary.todaySeconds) || '0 мин'}</span>
-                <span className="home-summary-label">Сегодня</span>
+                <span className="home-summary-value">{formatSeconds(summary.todayDeepSeconds)}</span>
+                <span className="home-summary-label">Глубокая · сегодня</span>
+                <span className="home-summary-total">всего {formatSeconds(summary.todaySeconds)}</span>
               </div>
               <div className="home-summary-divider" />
               <div className="home-summary-item">
-                <span className="home-summary-value">{formatSeconds(summary.weekSeconds) || '0 мин'}</span>
-                <span className="home-summary-label">За неделю</span>
+                <span className="home-summary-value">{formatSeconds(summary.weekDeepSeconds)}</span>
+                <span className="home-summary-label">Глубокая · неделя</span>
+                <span className="home-summary-total">всего {formatSeconds(summary.weekSeconds)}</span>
               </div>
             </div>
             {recoveryRange && (
