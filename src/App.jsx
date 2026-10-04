@@ -9,7 +9,8 @@ import HistoryPage from './components/HistoryPage'
 import InstallPrompt from './components/InstallPrompt'
 import Onboarding from './components/Onboarding'
 import { playStart, playReminder, playStop } from './utils/sound'
-import { formatRecoveryRange } from './utils/analytics'
+import { formatRecoveryRange, formatSeconds } from './utils/analytics'
+import { askNotificationPermission, showReminderNotification } from './utils/notify'
 import { dayKey } from './utils/dates'
 
 const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form', MANUAL: 'manual', EDIT: 'edit' }
@@ -180,12 +181,33 @@ export default function App() {
         if (chunk > 0 && chunk !== lastReminderRef.current) {
           lastReminderRef.current = chunk
           playReminder()
+          if (document.hidden) {
+            showReminderNotification(
+              `Рабочая сессия: ${formatSeconds(secs)}`,
+              'Концентрация держится? Если нет — самое время сделать паузу.',
+            )
+          }
         }
       }, 1000)
     } else {
       clearInterval(intervalRef.current)
     }
     return () => clearInterval(intervalRef.current)
+  }, [view, startTime])
+
+  // Coming back to a running session: say how long it has been, since the sound and
+  // notification may have been missed while the app was in the background
+  useEffect(() => {
+    if (view !== VIEW.RUNNING) return
+    function onVisible() {
+      if (document.hidden) return
+      const secs = Math.floor((Date.now() - startTime) / 1000)
+      if (secs < 60) return
+      setElapsed(secs)
+      showToast(`Вы работаете уже ${formatSeconds(secs)}`, undefined, 3500)
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
   }, [view, startTime])
 
   function persistSessions(next) {
@@ -195,6 +217,7 @@ export default function App() {
 
   function handleStart() {
     playStart()
+    askNotificationPermission()
     const now = Date.now()
     saveActiveSession({ startTime: now })
     setStartTime(now)
