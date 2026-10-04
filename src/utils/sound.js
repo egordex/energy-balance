@@ -5,8 +5,26 @@ function getContext() {
   return audioCtx
 }
 
-function playTone(freq, duration, volume = 0.3) {
+// Mobile browsers suspend the context when the app goes to the background or the screen locks,
+// and a suspended context stays silent until it is resumed. Resume it on every sound and on
+// the next touch / return to the app.
+function resumeContext() {
   const ctx = getContext()
+  if (ctx.state !== 'running') ctx.resume().catch(() => {})
+  return ctx
+}
+
+export function unlockAudio() {
+  try { resumeContext() } catch { /* no audio support */ }
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', unlockAudio, { passive: true })
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && audioCtx) unlockAudio() })
+}
+
+function playTone(freq, duration, volume = 0.3) {
+  const ctx = resumeContext()
   const osc = ctx.createOscillator()
   const gain = ctx.createGain()
   osc.connect(gain)
