@@ -1441,6 +1441,57 @@ body {
   -webkit-appearance: none;
 }
 
+.field-warning {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #b8792e;
+  background: rgba(184, 121, 46, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
+.form-hint {
+  font-size: 12px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.norm-card.norm-card--pending {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.norm-card.norm-card--pending .norm-label,
+.norm-card.norm-card--pending .norm-sub {
+  color: var(--text-muted);
+}
+
+.norm-card.norm-card--pending .norm-value {
+  color: var(--text);
+}
+
+.norm-progress {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 6px 0 4px;
+}
+
+.norm-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.home-norm-progress {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
 .duration-unit {
   font-size: 13px;
   color: var(--text-muted);
@@ -1847,8 +1898,32 @@ input[type="date"].select {
   padding: 10px 24px;
   border-radius: 20px;
   z-index: 300;
-  animation: toast-in 0.25s ease, toast-out 0.3s ease 2.2s forwards;
+  animation: toast-in 0.25s ease, toast-out 0.3s ease var(--toast-hide-delay, 2200ms) forwards;
   pointer-events: none;
+}
+
+.toast--action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-right: 14px;
+  pointer-events: auto;
+}
+
+.toast--action span {
+  white-space: nowrap;
+}
+
+.toast-action {
+  background: rgba(255, 255, 255, 0.16);
+  border: none;
+  border-radius: 14px;
+  color: #9fd8f2;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 12px;
+  cursor: pointer;
 }
 
 @keyframes toast-in {

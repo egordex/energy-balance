@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm } from '../utils/analytics'
+import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm, computeNormProgress } from '../utils/analytics'
 
 function computeHomeSummary(sessions) {
   if (sessions.length === 0) return null
@@ -48,6 +48,7 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
   const [showRecoveryTip, setShowRecoveryTip] = useState(false)
   const summary = useMemo(() => computeHomeSummary(sessions), [sessions])
   const norm = useMemo(() => computePersonalNorm(getSessionsLast30Days(sessions)), [sessions])
+  const normProgress = useMemo(() => computeNormProgress(getSessionsLast30Days(sessions)), [sessions])
 
   const overNorm =
     summary && norm && norm.maxHours !== null && summary.todayDeepSeconds / 3600 > norm.maxHours
@@ -147,6 +148,11 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
                   </p>
                 )}
               </div>
+            )}
+            {!norm && (
+              <p className="home-norm-progress">
+                До вашей нормы: {normProgress.ratedDays} из&nbsp;{normProgress.target} дней с&nbsp;оценкой состояния
+              </p>
             )}
             {overNorm && (
               <p className="home-norm-hint">

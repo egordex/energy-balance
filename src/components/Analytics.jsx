@@ -6,6 +6,7 @@ import {
   computeInsights,
   generateInsightTexts,
   computePersonalNorm,
+  computeNormProgress,
   computeWorkTypeStats,
   computeStreak,
   formatSeconds,
@@ -58,19 +59,20 @@ function StateBar({ value }) {
 }
 
 export default function Analytics() {
-  const { stats, insights, insightTexts, hasData, streak, norm, workTypeStats } = useMemo(() => {
+  const { stats, insights, insightTexts, hasData, streak, norm, normProgress, workTypeStats } = useMemo(() => {
     const all = loadSessions()
     const sessions = getSessionsLast30Days(all)
     if (sessions.length === 0) {
-      return { hasData: false, stats: null, insights: null, insightTexts: [], streak: 0, norm: null, workTypeStats: [] }
+      return { hasData: false, stats: null, insights: null, insightTexts: [], streak: 0, norm: null, normProgress: null, workTypeStats: [] }
     }
     const stats = computeStats(sessions)
     const insights = computeInsights(sessions)
     const insightTexts = generateInsightTexts(insights)
     const streak = computeStreak(all)
     const norm = computePersonalNorm(sessions)
+    const normProgress = computeNormProgress(sessions)
     const workTypeStats = computeWorkTypeStats(sessions)
-    return { hasData: true, stats, insights, insightTexts, streak, norm, workTypeStats }
+    return { hasData: true, stats, insights, insightTexts, streak, norm, normProgress, workTypeStats }
   }, [])
 
   if (!hasData) {
@@ -91,6 +93,24 @@ export default function Analytics() {
         <h1 className="page-header-title">Аналитика</h1>
         <p className="page-header-sub">За последние 30 дней</p>
       </header>
+
+      {!norm && normProgress && (
+        <div className="norm-card norm-card--pending">
+          <span className="norm-label">Ваша норма глубокой работы</span>
+          <span className="norm-value">Пока считаем</span>
+          <div className="norm-progress">
+            <div
+              className="norm-progress-fill"
+              style={{ width: `${Math.min(100, (normProgress.ratedDays / normProgress.target) * 100)}%` }}
+            />
+          </div>
+          <span className="norm-sub">
+            {normProgress.ratedDays < normProgress.target
+              ? `${normProgress.ratedDays} из ${normProgress.target} дней с оценкой состояния. Оценивайте состояние после каждой сессии — без неё день не попадёт в расчёт.`
+              : 'Дней хватает, но нагрузка в них сильно разная. Продолжайте записи: норма появится, когда в одном диапазоне часов будет два дня с оценкой.'}
+          </span>
+        </div>
+      )}
 
       {norm && (
         <div className="norm-card">

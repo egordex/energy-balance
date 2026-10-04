@@ -24,6 +24,8 @@ const WELLBEING = [
   { value: 5, emoji: '🚀', label: 'Отлично' },
 ]
 
+const LONG_TIMER_SECONDS = 3 * 3600
+
 function formatDuration(totalSeconds) {
   const h = Math.floor(totalSeconds / 3600)
   const m = Math.floor((totalSeconds % 3600) / 60)
@@ -33,28 +35,95 @@ function formatDuration(totalSeconds) {
   return `${s} сек`
 }
 
+function clamp(v, max) {
+  return Math.max(0, Math.min(max, parseInt(v, 10) || 0))
+}
+
 export default function SessionForm({ elapsed, onSave, onDiscard }) {
   const [workType, setWorkType] = useState('')
   const [depth, setDepth] = useState('')
   const [wellbeing, setWellbeing] = useState(null)
   const [comment, setComment] = useState('')
   const [showDepthTip, setShowDepthTip] = useState(false)
+  const [hours, setHours] = useState(String(Math.floor(elapsed / 3600)))
+  const [minutes, setMinutes] = useState(String(Math.floor((elapsed % 3600) / 60)))
+  const [edited, setEdited] = useState(false)
 
-  const canSave = workType !== '' && depth !== ''
+  // Untouched duration keeps the timer's exact seconds; an edited one is hours + minutes
+  const durationSeconds = edited
+    ? clamp(hours, 99) * 3600 + clamp(minutes, 59) * 60
+    : elapsed
+
+  const canSave = workType !== '' && depth !== '' && wellbeing !== null && durationSeconds > 0
+
+  function changeHours(v) {
+    setEdited(true)
+    setHours(v === '' ? '' : String(clamp(v, 99)))
+  }
+
+  function changeMinutes(v) {
+    setEdited(true)
+    setMinutes(v === '' ? '' : String(clamp(v, 59)))
+  }
 
   function handleSubmit(e) {
     e.preventDefault()
     if (!canSave) return
-    onSave({ workType, depth, wellbeing, comment: comment.trim() })
+    onSave({ workType, depth, wellbeing, comment: comment.trim(), durationSeconds })
   }
+
+  const missing = [
+    workType === '' && 'тип',
+    depth === '' && 'глубину',
+    wellbeing === null && 'состояние',
+  ].filter(Boolean)
 
   return (
     <div className="fullscreen-form">
       <form className="session-form" onSubmit={handleSubmit}>
         <header className="page-header page-header--stack">
           <h2 className="page-header-title">Как поработали?</h2>
-          <p className="page-header-sub">Длительность: <strong>{formatDuration(elapsed)}</strong></p>
+          <p className="page-header-sub">Таймер показал <strong>{formatDuration(elapsed)}</strong></p>
         </header>
+
+        <div className="field">
+          <label>Продолжительность</label>
+          <div className="duration-row">
+            <div className="duration-input-wrap">
+              <input
+                type="number"
+                inputMode="numeric"
+                className="duration-input"
+                placeholder="0"
+                min="0"
+                max="99"
+                value={hours}
+                onChange={(e) => changeHours(e.target.value)}
+                aria-label="Часы"
+              />
+              <span className="duration-unit">ч</span>
+            </div>
+            <div className="duration-input-wrap">
+              <input
+                type="number"
+                inputMode="numeric"
+                className="duration-input"
+                placeholder="0"
+                min="0"
+                max="59"
+                value={minutes}
+                onChange={(e) => changeMinutes(e.target.value)}
+                aria-label="Минуты"
+              />
+              <span className="duration-unit">мин</span>
+            </div>
+          </div>
+          {!edited && elapsed >= LONG_TIMER_SECONDS && (
+            <p className="field-warning">
+              Таймер шёл {Math.floor(elapsed / 3600)}&nbsp;ч — всё это время вы работали? Если нет, поправьте длительность.
+            </p>
+          )}
+        </div>
 
         <div className="field">
           <label htmlFor="work-type">Тип работы</label>
@@ -110,10 +179,7 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
 
         <div className="field">
           <label>
-            Состояние сейчас{' '}
-            <span style={{ fontWeight: 400, textTransform: 'none', fontSize: '11px', color: 'var(--text-dim)' }}>
-              (необязательно)
-            </span>
+            Состояние сейчас
           </label>
           <div className="wellbeing-row">
             {WELLBEING.map((opt) => (
@@ -121,7 +187,7 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
                 key={opt.value}
                 type="button"
                 className={`wb-btn${wellbeing === opt.value ? ' selected' : ''}`}
-                onClick={() => setWellbeing(wellbeing === opt.value ? null : opt.value)}
+                onClick={() => setWellbeing(opt.value)}
                 title={opt.label}
               >
                 <span className="wb-emoji">{opt.emoji}</span>
@@ -149,6 +215,9 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginTop: 'auto' }}>
+          {!canSave && missing.length > 0 && (
+            <p className="form-hint">Осталось выбрать: {missing.join(', ')}</p>
+          )}
           <button type="submit" className="btn btn-save" disabled={!canSave}>
             Сохранить
           </button>
@@ -157,7 +226,7 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
             onClick={onDiscard}
             style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: 13, cursor: 'pointer', padding: '6px 0' }}
           >
-            Отменить и выйти
+            Удалить сессию
           </button>
         </div>
       </form>

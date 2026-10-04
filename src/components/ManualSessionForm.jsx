@@ -39,7 +39,14 @@ export default function ManualSessionForm({ onSave, onCancel }) {
   const [showDepthTip, setShowDepthTip] = useState(false)
 
   const totalSeconds = (parseInt(hours || 0, 10) * 3600) + (parseInt(minutes || 0, 10) * 60)
-  const canSave = workType !== '' && depth !== '' && date !== '' && totalSeconds > 0
+  const canSave = workType !== '' && depth !== '' && wellbeing !== null && date !== '' && totalSeconds > 0
+
+  const missing = [
+    totalSeconds <= 0 && 'продолжительность',
+    workType === '' && 'тип',
+    depth === '' && 'глубину',
+    wellbeing === null && 'состояние',
+  ].filter(Boolean)
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -174,10 +181,7 @@ export default function ManualSessionForm({ onSave, onCancel }) {
 
         <div className="field">
           <label>
-            Состояние{' '}
-            <span style={{ fontWeight: 400, textTransform: 'none', fontSize: '11px', color: 'var(--text-dim)' }}>
-              (необязательно)
-            </span>
+            Состояние
           </label>
           <div className="wellbeing-row">
             {WELLBEING.map((opt) => (
@@ -185,7 +189,7 @@ export default function ManualSessionForm({ onSave, onCancel }) {
                 key={opt.value}
                 type="button"
                 className={`wb-btn${wellbeing === opt.value ? ' selected' : ''}`}
-                onClick={() => setWellbeing(wellbeing === opt.value ? null : opt.value)}
+                onClick={() => setWellbeing(opt.value)}
                 title={opt.label}
               >
                 <span className="wb-emoji">{opt.emoji}</span>
@@ -213,6 +217,9 @@ export default function ManualSessionForm({ onSave, onCancel }) {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginTop: 'auto' }}>
+          {!canSave && missing.length > 0 && (
+            <p className="form-hint">Осталось заполнить: {missing.join(', ')}</p>
+          )}
           <button type="submit" className="btn btn-save" disabled={!canSave}>
             Сохранить
           </button>

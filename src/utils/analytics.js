@@ -48,10 +48,20 @@ function findSweetSpot(daysWithState) {
   return bucketData.filter((b) => b.count >= 2).sort((a, b) => (b.avgState ?? 0) - (a.avgState ?? 0))[0] ?? null
 }
 
+// The method suggests watching yourself for 1–2 weeks, so the norm needs a week of rated days
+export const NORM_MIN_DAYS = 7
+
+export function computeNormProgress(sessions) {
+  const byDay = groupByDay(sessions)
+  const ratedDays = Object.values(byDay).filter((d) => d.wellbeings.length > 0).length
+  return { ratedDays, target: NORM_MIN_DAYS }
+}
+
 // Personal norm: the deep-work range that historically correlates with the best wellbeing
 export function computePersonalNorm(sessions) {
   const byDay = groupByDay(sessions)
   const daysWithState = Object.entries(byDay).filter(([, d]) => d.wellbeings.length > 0)
+  if (daysWithState.length < NORM_MIN_DAYS) return null
   const sweetSpot = findSweetSpot(daysWithState)
   if (!sweetSpot) return null
   return {

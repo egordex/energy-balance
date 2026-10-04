@@ -130,7 +130,8 @@ export default function App() {
   })
   const [showInstall, setShowInstall] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('wct_onboarding_shown'))
-  const [toast, setToast] = useState(null)
+  const [toast, setToast] = useState(null) // { id, message, action? }
+  const toastId = useRef(0)
   const [sessions, setSessions] = useState(loadSessions)
   const intervalRef = useRef(null)
   // Don't replay reminders for blocks that elapsed while the app was closed
@@ -194,10 +195,11 @@ export default function App() {
     setView(VIEW.FORM)
   }
 
-  function showToast(message) {
+  function showToast(message, action, duration = 2500) {
     clearTimeout(toastTimer.current)
-    setToast(message || pickToast())
-    toastTimer.current = setTimeout(() => setToast(null), 2500)
+    toastId.current += 1
+    setToast({ id: toastId.current, message: message || pickToast(), action, duration })
+    toastTimer.current = setTimeout(() => setToast(null), duration)
   }
 
   function handleSave(formData) {
@@ -233,10 +235,22 @@ export default function App() {
   }
 
   function handleDiscard() {
+    const discarded = { startTime, elapsed }
     saveActiveSession(null)
     setView(VIEW.IDLE)
     setStartTime(null)
     setElapsed(0)
+    showToast('Сессия удалена', {
+      label: 'Вернуть',
+      run: () => {
+        saveActiveSession({ startTime: discarded.startTime, stoppedElapsed: discarded.elapsed })
+        setStartTime(discarded.startTime)
+        setElapsed(discarded.elapsed)
+        setView(VIEW.FORM)
+        clearTimeout(toastTimer.current)
+        setToast(null)
+      },
+    }, 5000)
   }
 
   function handleDeleteSession(id) {
@@ -248,9 +262,7 @@ export default function App() {
   }
 
   function showNavHint() {
-    clearTimeout(toastTimer.current)
-    setToast('Сначала завершите сессию')
-    toastTimer.current = setTimeout(() => setToast(null), 2500)
+    showToast('Сначала завершите сессию')
   }
 
   function handleNavigate(target) {
@@ -301,7 +313,20 @@ export default function App() {
       </div>
       {showNav && <NavBar page={page} onNavigate={handleNavigate} isRunning={isRunning} />}
       {showInstall && <InstallPrompt onClose={() => setShowInstall(false)} />}
-      {toast && <div className="toast" key={toast + Date.now()}>{toast}</div>}
+      {toast && (
+        <div
+          className={`toast${toast.action ? ' toast--action' : ''}`}
+          key={toast.id}
+          style={{ '--toast-hide-delay': `${toast.duration - 300}ms` }}
+        >
+          <span>{toast.message}</span>
+          {toast.action && (
+            <button type="button" className="toast-action" onClick={toast.action.run}>
+              {toast.action.label}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }
