@@ -18,6 +18,24 @@ function loadSessions() {
   return JSON.parse(localStorage.getItem('wct_sessions') || '[]')
 }
 
+const ACTIVE_KEY = 'wct_active_session'
+
+// A running (or stopped-but-unsaved) session survives reloads and the app being evicted from memory
+function loadActiveSession() {
+  try {
+    const a = JSON.parse(localStorage.getItem(ACTIVE_KEY))
+    if (a && typeof a.startTime === 'number') return a
+  } catch {
+    // corrupted entry: ignore
+  }
+  return null
+}
+
+function saveActiveSession(a) {
+  if (a) localStorage.setItem(ACTIVE_KEY, JSON.stringify(a))
+  else localStorage.removeItem(ACTIVE_KEY)
+}
+
 function NavItem({ active, disabled, onClick, label, icon }) {
   const [pressed, setPressed] = useState(false)
 
@@ -99,15 +117,24 @@ function pickToast() {
 
 export default function App() {
   const [page, setPage] = useState('home')
-  const [view, setView] = useState(VIEW.IDLE)
-  const [startTime, setStartTime] = useState(null)
-  const [elapsed, setElapsed] = useState(0)
+  const [restored] = useState(loadActiveSession)
+  const [view, setView] = useState(() => {
+    if (!restored) return VIEW.IDLE
+    return typeof restored.stoppedElapsed === 'number' ? VIEW.FORM : VIEW.RUNNING
+  })
+  const [startTime, setStartTime] = useState(restored ? restored.startTime : null)
+  const [elapsed, setElapsed] = useState(() => {
+    if (!restored) return 0
+    if (typeof restored.stoppedElapsed === 'number') return restored.stoppedElapsed
+    return Math.max(0, Math.floor((Date.now() - restored.startTime) / 1000))
+  })
   const [showInstall, setShowInstall] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('wct_onboarding_shown'))
   const [toast, setToast] = useState(null)
   const [sessions, setSessions] = useState(loadSessions)
   const intervalRef = useRef(null)
-  const lastReminderRef = useRef(0)
+  // Don't replay reminders for blocks that elapsed while the app was closed
+  const lastReminderRef = useRef(Math.floor(elapsed / REMINDER_INTERVAL))
   const toastTimer = useRef(null)
 
   const isRunning = view === VIEW.RUNNING
@@ -153,7 +180,9 @@ export default function App() {
 
   function handleStart() {
     playStart()
-    setStartTime(Date.now())
+    const now = Date.now()
+    saveActiveSession({ startTime: now })
+    setStartTime(now)
     setElapsed(0)
     lastReminderRef.current = 0
     setView(VIEW.RUNNING)
@@ -161,6 +190,7 @@ export default function App() {
 
   function handleStop() {
     playStop()
+    saveActiveSession({ startTime, stoppedElapsed: elapsed })
     setView(VIEW.FORM)
   }
 
@@ -174,6 +204,7 @@ export default function App() {
     const session = { id: crypto.randomUUID(), startedAt: new Date(startTime).toISOString(), durationSeconds: elapsed, ...formData }
     const next = [...sessions, session]
     persistSessions(next)
+    saveActiveSession(null)
     setView(VIEW.IDLE)
     setStartTime(null)
     setElapsed(0)
@@ -202,6 +233,7 @@ export default function App() {
   }
 
   function handleDiscard() {
+    saveActiveSession(null)
     setView(VIEW.IDLE)
     setStartTime(null)
     setElapsed(0)
