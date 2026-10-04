@@ -74,10 +74,23 @@ body {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  padding: 0 16px 24px;
+  /* Keep the last button clear of the iPhone home indicator and rounded screen edge */
+  padding: 0 16px calc(32px + max(16px, env(safe-area-inset-bottom, 0px)));
   display: flex;
   flex-direction: column;
+  flex-shrink: 0; /* otherwise it shrinks to the screen height and its bottom padding is lost */
   min-height: 100%;
+}
+
+.form-secondary-btn {
+  width: 100%;
+  min-height: 48px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .fullscreen-form .session-form {

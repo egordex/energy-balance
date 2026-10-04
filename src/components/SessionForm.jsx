@@ -214,7 +214,7 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
           />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginTop: 'auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 'auto' }}>
           {!canSave && missing.length > 0 && (
             <p className="form-hint">Осталось выбрать: {missing.join(', ')}</p>
           )}
@@ -224,7 +224,7 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
           <button
             type="button"
             onClick={onDiscard}
-            style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: 13, cursor: 'pointer', padding: '6px 0' }}
+            className="form-secondary-btn"
           >
             Удалить сессию
           </button>

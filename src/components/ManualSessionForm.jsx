@@ -227,7 +227,7 @@ export default function ManualSessionForm({ initial, onSave, onCancel }) {
           />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginTop: 'auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 'auto' }}>
           {!canSave && missing.length > 0 && (
             <p className="form-hint">Осталось заполнить: {missing.join(', ')}</p>
           )}
@@ -237,7 +237,7 @@ export default function ManualSessionForm({ initial, onSave, onCancel }) {
           <button
             type="button"
             onClick={onCancel}
-            style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: 13, cursor: 'pointer', padding: '6px 0' }}
+            className="form-secondary-btn"
           >
             Отмена
           </button>
