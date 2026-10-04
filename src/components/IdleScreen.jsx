@@ -81,21 +81,29 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
           </g>
         </svg>
         {isRunning && <div className="home-hero-glow" />}
-        <div className={`home-hero-center${isRunning ? ' home-hero-center--running' : ''}`}>
-          <svg viewBox="0 0 200 200" className={`home-hero-spinner${isRunning ? ' home-hero-spinner--active' : ''}`}>
-            {TICKS.map(([x1, y1, x2, y2, color]) => (
-              <line key={x1 + '-' + y1} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth="9" strokeLinecap="round" />
-            ))}
-          </svg>
-          {isRunning ? (
-            <>
-              <p className="home-hero-status">Рабочая сессия</p>
-              <h1 className="home-hero-timer">{formatTimer(elapsed)}</h1>
-            </>
-          ) : (
-            <h1 className="home-hero-title">Work Energy<br />Balance</h1>
-          )}
-        </div>
+        {isRunning ? (
+          <div className="home-hero-center home-hero-center--running">
+            <svg viewBox="0 0 200 200" className="home-hero-spinner home-hero-spinner--active">
+              {TICKS.map(([x1, y1, x2, y2, color]) => (
+                <line key={x1 + '-' + y1} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth="9" strokeLinecap="round" />
+              ))}
+            </svg>
+            <p className="home-hero-status">Рабочая сессия</p>
+            <h1 className="home-hero-timer">{formatTimer(elapsed)}</h1>
+          </div>
+        ) : (
+          <button type="button" className="home-hero-center home-hero-play" onClick={onStart} aria-label="Начать рабочую сессию">
+            <svg viewBox="0 0 200 200" className="home-hero-spinner">
+              {TICKS.map(([x1, y1, x2, y2, color]) => (
+                <line key={x1 + '-' + y1} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth="9" strokeLinecap="round" />
+              ))}
+            </svg>
+            <svg viewBox="0 0 100 100" className="home-hero-play-icon" aria-hidden="true">
+              <path d="M34 22 L80 50 L34 78 Z" fill="currentColor" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" />
+            </svg>
+            <span className="home-hero-title">Work Energy<br />Balance</span>
+          </button>
+        )}
       </div>
       <div className="home-card">
         {!isRunning && todayDeep > 0 ? (

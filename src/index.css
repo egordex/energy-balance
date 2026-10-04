@@ -306,7 +306,42 @@ body {
   color: #8f5d1f;
 }
 
+.home-hero-play {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease;
+}
+
+.home-hero-play:active {
+  transform: scale(0.97);
+}
+
+/* Barely visible play mark behind the title: the hero itself starts the session */
+.home-hero-play-icon {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  color: #fff;
+  opacity: 0.08;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.home-hero-play:hover .home-hero-play-icon,
+.home-hero-play:focus-visible .home-hero-play-icon {
+  opacity: 0.16;
+}
+
+.home-hero-play:active .home-hero-play-icon {
+  opacity: 0.22;
+}
+
 .home-hero-title {
+  display: block;
   position: relative;
   font-size: 36px;
   font-weight: 700;
