@@ -44,7 +44,7 @@ function formatTimer(totalSeconds) {
   return `${mm}:${ss}`
 }
 
-export default function IdleScreen({ onStart, onStop, onManual, sessions, onViewHistory, isRunning, elapsed }) {
+export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunning, elapsed }) {
   const [showRecoveryTip, setShowRecoveryTip] = useState(false)
   const summary = useMemo(() => computeHomeSummary(sessions), [sessions])
   const norm = useMemo(() => computePersonalNorm(getSessionsLast30Days(sessions)), [sessions])
@@ -79,13 +79,6 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, onView
           </g>
         </svg>
         {isRunning && <div className="home-hero-glow" />}
-        {!isRunning && sessions.length > 0 && (
-          <button className="home-hero-history" onClick={onViewHistory} aria-label="История записей">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 8v4l3 3" /><circle cx="12" cy="12" r="10" />
-            </svg>
-          </button>
-        )}
         <div className={`home-hero-center${isRunning ? ' home-hero-center--running' : ''}`}>
           <svg viewBox="0 0 200 200" className={`home-hero-spinner${isRunning ? ' home-hero-spinner--active' : ''}`}>
             <line x1="100" y1="18" x2="100" y2="3" stroke="rgba(126,204,232,0.5)" strokeWidth="9" strokeLinecap="round" />

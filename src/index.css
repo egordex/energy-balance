@@ -296,28 +296,6 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-.home-hero-history {
-  position: absolute;
-  top: max(16px, env(safe-area-inset-top, 16px));
-  right: 16px;
-  z-index: 2;
-  background: rgba(255, 255, 255, 0.15);
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.home-hero-history:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-
 .home-card {
   background: #fff;
   border-radius: 24px 24px 0 0;
@@ -879,6 +857,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   padding-right: 28px;
 }
 
@@ -888,6 +867,8 @@ body {
 }
 
 .session-card-duration {
+  flex-shrink: 0;
+  white-space: nowrap;
   font-size: 13px;
   font-weight: 600;
   color: var(--text);
@@ -895,6 +876,7 @@ body {
 
 .session-card-tags {
   display: flex;
+  align-items: center;
   gap: 6px;
   flex-wrap: wrap;
 }
@@ -981,6 +963,8 @@ body {
 /* History page */
 .history-page {
   width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
   padding: 0 16px 24px;
   display: flex;
   flex-direction: column;
@@ -990,7 +974,59 @@ body {
 .history-list {
   display: flex;
   flex-direction: column;
+  gap: 20px;
+}
+
+.history-day {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
+}
+
+.history-day-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 2px 12px;
+  padding: 0 2px;
+}
+
+.history-day-title {
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.history-day-sum {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.session-card--tappable {
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.session-card--tappable:active {
+  transform: scale(0.99);
+  border-color: var(--text-dim);
+}
+
+.session-card-type {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.session-card-emoji {
+  font-size: 15px;
+  line-height: 1;
 }
 
 .history-empty {

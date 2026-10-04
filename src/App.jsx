@@ -11,8 +11,8 @@ import Onboarding from './components/Onboarding'
 import { playStart, playReminder, playStop } from './utils/sound'
 import { formatRecoveryRange } from './utils/analytics'
 
-const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form', MANUAL: 'manual' }
-const REMINDER_INTERVAL = 25 * 60
+const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form', MANUAL: 'manual', EDIT: 'edit' }
+const REMINDER_INTERVAL = 30 * 60
 
 function loadSessions() {
   return JSON.parse(localStorage.getItem('wct_sessions') || '[]')
@@ -86,6 +86,18 @@ function NavBar({ page, onNavigate, isRunning }) {
         }
       />
       <NavItem
+        active={page === 'history'}
+        disabled={isRunning}
+        onClick={() => onNavigate('history')}
+        label="История"
+        icon={
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        }
+      />
+      <NavItem
         active={page === 'info'}
         disabled={isRunning}
         onClick={() => onNavigate('info')}
@@ -133,17 +145,18 @@ export default function App() {
   const [toast, setToast] = useState(null) // { id, message, action? }
   const toastId = useRef(0)
   const [sessions, setSessions] = useState(loadSessions)
+  const [editingId, setEditingId] = useState(null)
   const intervalRef = useRef(null)
   // Don't replay reminders for blocks that elapsed while the app was closed
   const lastReminderRef = useRef(Math.floor(elapsed / REMINDER_INTERVAL))
   const toastTimer = useRef(null)
 
   const isRunning = view === VIEW.RUNNING
-  const showNav = (page === 'home' && (view === VIEW.IDLE || isRunning)) || (page !== 'home' && page !== 'history')
+  const showNav = (page === 'home' && (view === VIEW.IDLE || isRunning)) || (page !== 'home' && view !== VIEW.EDIT)
   const appClass = (() => {
-    if ((page === 'home' && (view === VIEW.IDLE || isRunning)) || page === 'history') return 'app app--edge'
+    if (page === 'home' && (view === VIEW.IDLE || isRunning)) return 'app app--edge'
     if (page === 'analytics' || page === 'info' || page === 'history' ||
-        view === VIEW.FORM || view === VIEW.MANUAL) return 'app app--top'
+        view === VIEW.FORM || view === VIEW.MANUAL || view === VIEW.EDIT) return 'app app--top'
     return 'app'
   })()
 
@@ -253,6 +266,23 @@ export default function App() {
     }, 5000)
   }
 
+  function handleEditSession(session) {
+    setEditingId(session.id)
+    setView(VIEW.EDIT)
+  }
+
+  function handleEditSave(data) {
+    persistSessions(sessions.map((s) => (s.id === editingId ? { ...s, ...data } : s)))
+    setEditingId(null)
+    setView(VIEW.IDLE)
+    showToast('Изменения сохранены')
+  }
+
+  function handleEditCancel() {
+    setEditingId(null)
+    setView(VIEW.IDLE)
+  }
+
   function handleDeleteSession(id) {
     persistSessions(sessions.filter((s) => s.id !== id))
   }
@@ -267,7 +297,7 @@ export default function App() {
 
   function handleNavigate(target) {
     if (view === VIEW.RUNNING) { showNavHint(); return }
-    if (view === VIEW.FORM || view === VIEW.MANUAL) return
+    if (view === VIEW.FORM || view === VIEW.MANUAL || view === VIEW.EDIT) return
     setPage(target)
   }
 
@@ -289,7 +319,6 @@ export default function App() {
             onStop={handleStop}
             onManual={() => setView(VIEW.MANUAL)}
             sessions={sessions}
-            onViewHistory={() => setPage('history')}
             isRunning={isRunning}
             elapsed={elapsed}
           />
@@ -302,12 +331,20 @@ export default function App() {
         )}
         {page === 'analytics' && <Analytics />}
         {page === 'info' && <InfoPage />}
-        {page === 'history' && (
+        {page === 'history' && view !== VIEW.EDIT && (
           <HistoryPage
             sessions={sessions}
+            onEdit={handleEditSession}
             onDelete={handleDeleteSession}
             onClearAll={handleClearAll}
-            onBack={() => setPage('home')}
+          />
+        )}
+        {page === 'history' && view === VIEW.EDIT && (
+          <ManualSessionForm
+            key={editingId}
+            initial={sessions.find((s) => s.id === editingId)}
+            onSave={handleEditSave}
+            onCancel={handleEditCancel}
           />
         )}
       </div>

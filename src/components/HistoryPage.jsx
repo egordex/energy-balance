@@ -1,32 +1,61 @@
 import { useState } from 'react'
 import SessionCard from './SessionCard'
+import { formatDayHeading, formatSessionDuration } from '../utils/format'
 
-export default function HistoryPage({ sessions, onDelete, onClearAll, onBack }) {
+function groupByDay(sessions) {
+  const days = {}
+  for (const s of sessions) {
+    const key = s.startedAt.slice(0, 10)
+    if (!days[key]) days[key] = { key, items: [], totalSeconds: 0, deepSeconds: 0 }
+    days[key].items.push(s)
+    days[key].totalSeconds += s.durationSeconds
+    if (s.depth === 'deep') days[key].deepSeconds += s.durationSeconds
+  }
+  return Object.values(days)
+    .sort((a, b) => b.key.localeCompare(a.key))
+    .map((d) => ({ ...d, items: d.items.sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt)) }))
+}
+
+function daySummary(day) {
+  if (day.deepSeconds > 0 && day.deepSeconds === day.totalSeconds) {
+    return `глубокой ${formatSessionDuration(day.deepSeconds)}`
+  }
+  if (day.deepSeconds > 0) {
+    return `глубокой ${formatSessionDuration(day.deepSeconds)} из ${formatSessionDuration(day.totalSeconds)}`
+  }
+  return `всего ${formatSessionDuration(day.totalSeconds)}`
+}
+
+export default function HistoryPage({ sessions, onEdit, onDelete, onClearAll }) {
   const [confirmClear, setConfirmClear] = useState(false)
-  const sorted = [...sessions].sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt))
+  const days = groupByDay(sessions)
 
   return (
     <div className="history-page">
-      <header className="page-header">
-        <button className="header-back-btn" onClick={onBack} aria-label="Назад">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
-        </button>
+      <header className="page-header page-header--stack">
         <h1 className="page-header-title">История</h1>
+        {sessions.length > 0 && <p className="page-header-sub">Нажмите на запись, чтобы изменить её</p>}
       </header>
 
-      {sorted.length === 0 && (
+      {sessions.length === 0 && (
         <p className="history-empty">Записей пока нет.</p>
       )}
 
       <div className="history-list">
-        {sorted.map((s) => (
-          <SessionCard key={s.id} session={s} onDelete={onDelete} />
+        {days.map((day) => (
+          <section className="history-day" key={day.key}>
+            <div className="history-day-head">
+              <h2 className="history-day-title">{formatDayHeading(day.key)}</h2>
+              <span className="history-day-sum">{daySummary(day)}</span>
+            </div>
+            {day.items.map((s) => (
+              <SessionCard key={s.id} session={s} onEdit={onEdit} onDelete={onDelete} />
+            ))}
+          </section>
         ))}
       </div>
 
-      {sorted.length > 0 && (
+      {sessions.length > 0 && (
         <div className="history-footer">
           {!confirmClear ? (
             <button className="btn-clear" onClick={() => setConfirmClear(true)}>

@@ -28,17 +28,21 @@ function todayString() {
   return new Date().toISOString().slice(0, 10)
 }
 
-export default function ManualSessionForm({ onSave, onCancel }) {
-  const [date, setDate] = useState(todayString())
-  const [hours, setHours] = useState('')
-  const [minutes, setMinutes] = useState('')
-  const [workType, setWorkType] = useState('')
-  const [depth, setDepth] = useState('')
-  const [wellbeing, setWellbeing] = useState(null)
-  const [comment, setComment] = useState('')
+// `initial` switches the form to editing an existing history entry
+export default function ManualSessionForm({ initial, onSave, onCancel }) {
+  const [date, setDate] = useState(initial ? initial.startedAt.slice(0, 10) : todayString())
+  const [hours, setHours] = useState(initial ? String(Math.floor(initial.durationSeconds / 3600)) : '')
+  const [minutes, setMinutes] = useState(initial ? String(Math.floor((initial.durationSeconds % 3600) / 60)) : '')
+  const [durationEdited, setDurationEdited] = useState(false)
+  const [workType, setWorkType] = useState(initial ? initial.workType : '')
+  const [depth, setDepth] = useState(initial ? initial.depth : '')
+  const [wellbeing, setWellbeing] = useState(initial && initial.wellbeing != null ? initial.wellbeing : null)
+  const [comment, setComment] = useState(initial ? initial.comment || '' : '')
   const [showDepthTip, setShowDepthTip] = useState(false)
 
-  const totalSeconds = (parseInt(hours || 0, 10) * 3600) + (parseInt(minutes || 0, 10) * 60)
+  const typedSeconds = (parseInt(hours || 0, 10) * 3600) + (parseInt(minutes || 0, 10) * 60)
+  // Untouched duration keeps the entry's exact seconds
+  const totalSeconds = initial && !durationEdited ? initial.durationSeconds : typedSeconds
   const canSave = workType !== '' && depth !== '' && wellbeing !== null && date !== '' && totalSeconds > 0
 
   const missing = [
@@ -51,8 +55,12 @@ export default function ManualSessionForm({ onSave, onCancel }) {
   function handleSubmit(e) {
     e.preventDefault()
     if (!canSave) return
+    // Same day as before: keep the original time of day
+    const startedAt = initial && date === initial.startedAt.slice(0, 10)
+      ? initial.startedAt
+      : new Date(date).toISOString()
     onSave({
-      startedAt: new Date(date).toISOString(),
+      startedAt,
       durationSeconds: totalSeconds,
       workType,
       depth,
@@ -62,11 +70,13 @@ export default function ManualSessionForm({ onSave, onCancel }) {
   }
 
   function handleHours(v) {
-    const n = Math.max(0, Math.min(23, parseInt(v, 10) || 0))
+    setDurationEdited(true)
+    const n = Math.max(0, Math.min(99, parseInt(v, 10) || 0))
     setHours(v === '' ? '' : String(n))
   }
 
   function handleMinutes(v) {
+    setDurationEdited(true)
     const n = Math.max(0, Math.min(59, parseInt(v, 10) || 0))
     setMinutes(v === '' ? '' : String(n))
   }
@@ -80,8 +90,8 @@ export default function ManualSessionForm({ onSave, onCancel }) {
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
           </button>
-          <h2 className="page-header-title">Прошлая сессия</h2>
-          <p className="page-header-sub">Запись без таймера</p>
+          <h2 className="page-header-title">{initial ? 'Редактирование' : 'Прошлая сессия'}</h2>
+          <p className="page-header-sub">{initial ? 'Измените данные записи' : 'Запись без таймера'}</p>
         </header>
 
         <div className="field">
@@ -106,7 +116,7 @@ export default function ManualSessionForm({ onSave, onCancel }) {
                 className="duration-input"
                 placeholder="0"
                 min="0"
-                max="23"
+                max="99"
                 value={hours}
                 onChange={(e) => handleHours(e.target.value)}
               />
@@ -221,7 +231,7 @@ export default function ManualSessionForm({ onSave, onCancel }) {
             <p className="form-hint">Осталось заполнить: {missing.join(', ')}</p>
           )}
           <button type="submit" className="btn btn-save" disabled={!canSave}>
-            Сохранить
+            {initial ? 'Сохранить изменения' : 'Сохранить'}
           </button>
           <button
             type="button"
