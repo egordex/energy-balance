@@ -46,13 +46,13 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
 
   const overNorm =
     summary && norm && norm.maxHours !== null && summary.todayDeepSeconds / 3600 > norm.maxHours
-  const recoveryRange = summary ? formatRecoveryRange(summary.todayDeepSeconds) : null
+  const recoveryRange = summary ? formatRecoveryRange(summary.todayDeepSeconds, norm) : null
 
   const todayDeep = summary ? summary.todayDeepSeconds : 0
   const recoveryText = recoveryRange
     ? overNorm
       ? `Выше вашей нормы (${norm.minHours}–${norm.maxHours} ч). Дальше ${recoveryRange} без сложных задач`
-      : `После ${formatSeconds(todayDeep)} глубокой работы: ${recoveryRange} без сложных задач до конца дня`
+      : `Глубокой работы на сегодня достаточно. Дальше ${recoveryRange} без сложных задач`
     : null
 
   return (
@@ -119,7 +119,7 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
                 </div>
                 {showRecoveryTip && (
                   <p className="home-recovery-tip-text">
-                    Время восстановления = часы глубокой работы ÷ 2 + 1. Столько как минимум стоит провести за&nbsp;лёгкими делами и&nbsp;отдыхом. А&nbsp;сон в&nbsp;такой день лучше не&nbsp;сокращать, а&nbsp;по&nbsp;возможности удлинить. По&nbsp;методике Екатерины Конновой («Атлант устал»).
+                    Когда дневная порция глубокой работы набрана, мозгу нужно время восстановиться: часы глубокой работы ÷ 2 + 1. Столько как минимум стоит провести за&nbsp;лёгкими делами и&nbsp;отдыхом. А&nbsp;сон в&nbsp;такой день лучше не&nbsp;сокращать, а&nbsp;по&nbsp;возможности удлинить. По&nbsp;методике Екатерины Конновой («Атлант устал»).
                   </p>
                 )}
               </div>

@@ -211,12 +211,16 @@ export function computeStreak(sessions) {
   return streak
 }
 
-// Below this, the "+1" in the formula would suggest an hour of recovery after a short session
-const RECOVERY_MIN_DEEP_SECONDS = 3600
+// Recovery comes after the day's portion of deep work is done, not before ("выработали норму —
+// и всё, стоп"). Done = the lower end of the user's norm, or 3 h (the low end of the book's
+// 3–5 h) until a norm exists; never less than an hour.
+export function dailyDoneSeconds(norm) {
+  return Math.max(1, norm ? norm.minHours : 3) * 3600
+}
 
 // Recovery norm (Коннова, "Атлант устал"): часы восстановления = глубокая работа / 2 + 1
 export function computeRecoveryRange(deepSeconds) {
-  if (deepSeconds < RECOVERY_MIN_DEEP_SECONDS) return null
+  if (deepSeconds <= 0) return null
   const deepHours = deepSeconds / 3600
   const min = Math.round((deepHours / 2 + 1) * 2) / 2
   return { min, max: min + 1 }
@@ -226,7 +230,9 @@ function formatHours(h) {
   return Number.isInteger(h) ? String(h) : h.toFixed(1).replace('.', ',')
 }
 
-export function formatRecoveryRange(deepSeconds) {
+// Advice text for the range, or null while today's deep work is still below the "done" mark
+export function formatRecoveryRange(deepSeconds, norm) {
+  if (deepSeconds < dailyDoneSeconds(norm)) return null
   const range = computeRecoveryRange(deepSeconds)
   if (!range) return null
   // word joiners + nbsp keep the range on one line

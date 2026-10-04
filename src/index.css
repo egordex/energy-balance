@@ -1897,6 +1897,9 @@ input[type="date"].select {
   font-weight: 500;
   padding: 10px 24px;
   border-radius: 20px;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  text-align: center;
   z-index: 300;
   animation: toast-in 0.25s ease, toast-out 0.3s ease var(--toast-hide-delay, 2200ms) forwards;
   pointer-events: none;

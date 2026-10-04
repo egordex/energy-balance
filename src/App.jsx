@@ -9,7 +9,7 @@ import HistoryPage from './components/HistoryPage'
 import InstallPrompt from './components/InstallPrompt'
 import Onboarding from './components/Onboarding'
 import { playStart, playReminder, playStop } from './utils/sound'
-import { formatRecoveryRange, formatSeconds } from './utils/analytics'
+import { formatRecoveryRange, formatSeconds, computePersonalNorm, getSessionsLast30Days } from './utils/analytics'
 import { askNotificationPermission, showReminderNotification } from './utils/notify'
 import { dayKey } from './utils/dates'
 
@@ -253,8 +253,8 @@ export default function App() {
       const todayDeepSeconds = next
         .filter((s) => dayKey(s.startedAt) === todayStr && s.depth === 'deep')
         .reduce((sum, s) => sum + s.durationSeconds, 0)
-      const range = formatRecoveryRange(todayDeepSeconds)
-      showToast(range ? `Дальше ${range} без сложных задач` : undefined)
+      const range = formatRecoveryRange(todayDeepSeconds, computePersonalNorm(getSessionsLast30Days(next)))
+      showToast(range ? `Глубокой работы на сегодня достаточно. Дальше ${range} без сложных задач` : undefined, undefined, range ? 4500 : undefined)
     } else {
       showToast()
     }
