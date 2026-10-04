@@ -309,19 +309,6 @@ body {
   color: rgba(255, 255, 255, 0.92);
 }
 
-.home-hero-streak {
-  position: absolute;
-  top: max(14px, env(safe-area-inset-top, 14px));
-  right: 16px;
-  z-index: 2;
-  padding: 6px 12px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.14);
-  font-size: 13px;
-  font-weight: 600;
-  color: #fff;
-}
-
 .home-gauge {
   position: relative;
   z-index: 1;
@@ -384,17 +371,6 @@ body {
   font-size: 13px;
   text-align: center;
   color: rgba(255, 255, 255, 0.78);
-}
-
-.home-week-line {
-  font-size: 14px;
-  text-align: center;
-  color: var(--text-muted);
-}
-
-.home-week-line strong {
-  color: var(--text);
-  font-weight: 600;
 }
 
 .home-recovery-hint--over {

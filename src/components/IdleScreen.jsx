@@ -1,33 +1,16 @@
 import { useMemo, useState } from 'react'
-import { dayKey, mondayKey } from '../utils/dates'
-import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm, computeNormProgress, computeStreak } from '../utils/analytics'
+import { dayKey } from '../utils/dates'
+import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm, computeNormProgress } from '../utils/analytics'
 
 function computeHomeSummary(sessions) {
   if (sessions.length === 0) return null
 
   const todayStr = dayKey()
-  const mondayStr = mondayKey()
-
-  let todaySeconds = 0
   let todayDeepSeconds = 0
-  let weekSeconds = 0
-  let weekDeepSeconds = 0
-  let weekSessions = 0
-
   for (const s of sessions) {
-    const day = dayKey(s.startedAt)
-    if (day === todayStr) {
-      todaySeconds += s.durationSeconds
-      if (s.depth === 'deep') todayDeepSeconds += s.durationSeconds
-    }
-    if (day >= mondayStr) {
-      weekSeconds += s.durationSeconds
-      weekSessions += 1
-      if (s.depth === 'deep') weekDeepSeconds += s.durationSeconds
-    }
+    if (s.depth === 'deep' && dayKey(s.startedAt) === todayStr) todayDeepSeconds += s.durationSeconds
   }
-
-  return { todaySeconds, todayDeepSeconds, weekSeconds, weekDeepSeconds, weekSessions }
+  return { todayDeepSeconds }
 }
 
 // 12 ticks clockwise from the top: [x1, y1, x2, y2, color while a session is running]
@@ -50,14 +33,6 @@ const TICKS = [
 // "3–5 hours of deep work" the book describes. It is only a scale, not a limit.
 const DEFAULT_RING_HOURS = 4
 
-function plural(n, one, few, many) {
-  const mod10 = n % 10
-  const mod100 = n % 100
-  if (mod10 === 1 && mod100 !== 11) return one
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few
-  return many
-}
-
 function formatTimer(totalSeconds) {
   const h = Math.floor(totalSeconds / 3600)
   const m = Math.floor((totalSeconds % 3600) / 60)
@@ -77,7 +52,6 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
   const overNorm =
     summary && norm && norm.maxHours !== null && summary.todayDeepSeconds / 3600 > norm.maxHours
   const recoveryRange = summary ? formatRecoveryRange(summary.todayDeepSeconds) : null
-  const streak = useMemo(() => computeStreak(sessions), [sessions])
 
   const todayDeep = summary ? summary.todayDeepSeconds : 0
   const ringHours = norm ? (norm.maxHours ?? norm.minHours + 1) : DEFAULT_RING_HOURS
@@ -129,11 +103,6 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
         ) : (
           <>
             <p className="home-hero-brand">Work Energy Balance</p>
-            {streak >= 2 && (
-              <p className="home-hero-streak">
-                🔥 серия {streak}&nbsp;{plural(streak, 'день', 'дня', 'дней')}
-              </p>
-            )}
             <div className="home-gauge">
               <div
                 className="home-gauge-ring"
@@ -170,9 +139,6 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
       <div className="home-card">
         {!isRunning && summary ? (
           <div className="home-summary">
-            <p className="home-week-line">
-              За неделю: <strong>{formatSeconds(summary.weekDeepSeconds)}</strong> глубокой
-            </p>
             {recoveryText ? (
               <div className={`home-recovery-hint${overNorm ? ' home-recovery-hint--over' : ''}`}>
                 <div className="home-recovery-hint-row">
