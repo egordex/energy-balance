@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import RecoveryInfoSheet from './RecoveryInfoSheet'
 import { dayKey } from '../utils/dates'
 import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm } from '../utils/analytics'
@@ -30,6 +30,9 @@ const TICKS = [
   [59, 29, 52, 16, 'rgba(66,114,165,0.45)'],
 ]
 
+// How long idle-only content takes to fade out before the card starts sliding
+const FADE_OUT_MS = 180
+
 function formatTimer(totalSeconds) {
   const h = Math.floor(totalSeconds / 3600)
   const m = Math.floor((totalSeconds % 3600) / 60)
@@ -44,9 +47,21 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
   const [showRecoveryInfo, setShowRecoveryInfo] = useState(false)
   const cardRef = useRef(null)
   const lastCardTop = useRef(null)
+  // Idle-only card content (text, hints, second button) stays in the layout for a moment after
+  // start so it can fade out; only then is it removed and the card slides down.
+  const [idleExtrasGone, setIdleExtrasGone] = useState(isRunning)
 
-  // Starting a session shrinks the card to one button, so the blue hero grows. Animate it (FLIP):
-  // put the card back where it was, then let it slide down so the hero visibly fills the space.
+  useEffect(() => {
+    if (!isRunning) {
+      setIdleExtrasGone(false)
+      return
+    }
+    const t = setTimeout(() => setIdleExtrasGone(true), FADE_OUT_MS)
+    return () => clearTimeout(t)
+  }, [isRunning])
+
+  // Removing that content shrinks the card, so the blue hero grows. Animate it (FLIP): put the
+  // card back where it was, then let it slide down so the hero visibly fills the space.
   useLayoutEffect(() => {
     const card = cardRef.current
     const prevTop = lastCardTop.current
@@ -58,7 +73,7 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
     card.getBoundingClientRect()
     card.style.transition = 'transform 0.6s cubic-bezier(0.32, 0.72, 0, 1)'
     card.style.transform = ''
-  }, [isRunning])
+  }, [idleExtrasGone])
 
   // Remember where the card was after every render, for the animation above
   useLayoutEffect(() => {
@@ -102,34 +117,40 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
             <ellipse cx="280" cy="430" rx="100" ry="60" fill="rgba(80,160,240,0.06)" />
           </g>
         </svg>
-        {isRunning && <div className="home-hero-glow" />}
-        {isRunning ? (
-          <div className="home-hero-center home-hero-center--running">
-            <svg viewBox="0 0 200 200" className="home-hero-spinner home-hero-spinner--active">
-              {TICKS.map(([x1, y1, x2, y2, color]) => (
-                <line key={x1 + '-' + y1} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth="9" strokeLinecap="round" />
-              ))}
-            </svg>
-            <p className="home-hero-status">Рабочая сессия</p>
-            <h1 className="home-hero-timer">{formatTimer(elapsed)}</h1>
-          </div>
-        ) : (
-          <button type="button" className="home-hero-center home-hero-play" onClick={onStart} aria-label="Начать рабочую сессию">
+        <div className="home-hero-glow-wrap" aria-hidden="true">
+          <div className="home-hero-glow" />
+        </div>
+        <button
+          type="button"
+          className="home-hero-center home-hero-play"
+          onClick={onStart}
+          disabled={isRunning}
+          aria-label={isRunning ? undefined : 'Начать рабочую сессию'}
+        >
+          <span className="home-hero-spin">
             <svg viewBox="0 0 200 200" className="home-hero-spinner">
               {TICKS.map(([x1, y1, x2, y2, color]) => (
                 <line key={x1 + '-' + y1} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth="9" strokeLinecap="round" />
               ))}
             </svg>
-            <svg viewBox="0 0 100 100" className="home-hero-play-icon" aria-hidden="true">
-              <path d="M34 22 L80 50 L34 78 Z" fill="currentColor" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" />
-            </svg>
-            <span className="home-hero-title">Work Energy<br />Balance</span>
-          </button>
-        )}
+          </span>
+          <svg viewBox="0 0 100 100" className="home-hero-play-icon" aria-hidden="true">
+            <path d="M34 22 L80 50 L34 78 Z" fill="currentColor" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" />
+          </svg>
+          <span className="home-hero-stack">
+            <span className="home-hero-layer home-hero-layer--idle" aria-hidden={isRunning}>
+              <span className="home-hero-title">Work Energy<br />Balance</span>
+            </span>
+            <span className="home-hero-layer home-hero-layer--running" aria-hidden={!isRunning}>
+              <span className="home-hero-status">Рабочая сессия</span>
+              <span className="home-hero-timer">{formatTimer(elapsed)}</span>
+            </span>
+          </span>
+        </button>
       </div>
       <div className="home-card" ref={cardRef}>
-        {!isRunning && todayDeep > 0 ? (
-          <div className="home-summary">
+        {!idleExtrasGone && todayDeep > 0 ? (
+          <div className={`home-summary home-leaving${isRunning ? ' is-leaving' : ''}`}>
             <p className="home-today-line">
               Сегодня глубокой работы: <strong>{formatSeconds(todayDeep)}</strong>
             </p>
@@ -151,25 +172,28 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
               </div>
             )}
           </div>
-        ) : !isRunning && !summary ? (
-          <p className="home-card-text">
+        ) : !idleExtrasGone && !summary ? (
+          <p className={`home-card-text home-leaving${isRunning ? ' is-leaving' : ''}`}>
             Сколько часов глубокой работы – ваш предел? Отслеживайте и находите свою норму.
           </p>
         ) : null}
         <div className="home-card-actions">
-          {isRunning ? (
-            <button className="btn btn-stop home-appear" onClick={onStop}>
+          {/* One button for both states: it rides down with the card and turns from "start" into "stop" */}
+          <button
+            className={`btn home-main-btn ${isRunning ? 'btn-stop' : 'btn-primary'}`}
+            onClick={isRunning ? onStop : onStart}
+          >
+            <span className={`home-main-btn-label${isRunning ? '' : ' is-on'}`} aria-hidden={isRunning}>
+              Начать рабочую сессию
+            </span>
+            <span className={`home-main-btn-label${isRunning ? ' is-on' : ''}`} aria-hidden={!isRunning}>
               Завершить
+            </span>
+          </button>
+          {!idleExtrasGone && (
+            <button className={`btn-manual home-leaving${isRunning ? ' is-leaving' : ''}`} onClick={onManual} tabIndex={isRunning ? -1 : 0}>
+              Записать прошлую сессию
             </button>
-          ) : (
-            <>
-              <button className="btn btn-primary" onClick={onStart}>
-                Начать рабочую сессию
-              </button>
-              <button className="btn-manual" onClick={onManual}>
-                Записать прошлую сессию
-              </button>
-            </>
           )}
         </div>
       </div>

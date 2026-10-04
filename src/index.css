@@ -232,10 +232,23 @@ body {
   100% { filter: hue-rotate(8deg) brightness(1.02); }
 }
 
-.home-hero-glow {
+/* Glow and hue shift fade in when a session starts instead of switching on */
+.home-hero-glow-wrap {
   position: absolute;
   inset: 0;
   z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+.home-hero--running .home-hero-glow-wrap {
+  opacity: 1;
+}
+
+.home-hero-glow {
+  position: absolute;
+  inset: 0;
   background:
     radial-gradient(ellipse 60% 50% at 30% 40%, rgba(100, 180, 255, 0.15), transparent),
     radial-gradient(ellipse 50% 60% at 70% 60%, rgba(140, 120, 255, 0.1), transparent);
@@ -248,17 +261,27 @@ body {
   100% { opacity: 0.5; transform: translate(-10px, 5px) scale(0.98); }
 }
 
-.home-hero-spinner {
+/* The mark always has the rotation set up, paused while idle: starting a session resumes it
+   from where it is, so it never jumps. The pulse keeps going underneath. */
+.home-hero-spin {
   position: absolute;
   width: 260px;
   height: 260px;
+  animation: hero-spin 14s linear infinite;
+  animation-play-state: paused;
+}
+
+.home-hero--running .home-hero-spin {
+  animation-play-state: running;
+}
+
+.home-hero-spinner {
+  display: block;
+  width: 100%;
+  height: 100%;
   overflow: visible;
   animation: hero-pulse 3.5s ease-in-out infinite;
   transform-origin: center;
-}
-
-.home-hero-spinner.home-hero-spinner--active {
-  animation: hero-spin 14s linear infinite;
 }
 
 @keyframes hero-pulse {
@@ -271,34 +294,87 @@ body {
   to { transform: rotate(360deg); }
 }
 
-.home-hero-center--running {
+/* Title and timer sit in the same spot and cross-fade */
+.home-hero-stack {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+}
+
+.home-hero-layer {
+  grid-area: 1 / 1;
+  display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 6px;
-  animation: home-timer-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-@keyframes home-timer-in {
-  from { opacity: 0; transform: scale(0.92); }
-  to { opacity: 1; transform: scale(1); }
+.home-hero-layer--running {
+  opacity: 0;
+  transform: scale(0.92);
+  pointer-events: none;
 }
 
-.home-appear {
-  animation: home-appear 0.4s ease 0.15s both;
+.home-hero--running .home-hero-layer--idle {
+  opacity: 0;
+  transform: scale(1.08);
+  pointer-events: none;
 }
 
-@keyframes home-appear {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+.home-hero--running .home-hero-layer--running {
+  opacity: 1;
+  transform: scale(1);
+  transition-delay: 0.12s;
+}
+
+/* Main button: same element in both states, the color flows from start to stop */
+.btn.home-main-btn {
+  display: grid;
+  place-items: center;
+  transition: background 0.45s ease, box-shadow 0.45s ease, transform 0.1s;
+}
+
+.home-main-btn-label {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* The new label comes in once the old one is gone, so the two never overlap */
+.home-main-btn-label.is-on {
+  opacity: 1;
+  transition-delay: 0.15s;
+}
+
+/* Idle-only card content fades out before it leaves the layout */
+.home-leaving {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.home-leaving.is-leaving {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-hero-center--running,
-  .home-appear {
+  .home-hero-glow-wrap,
+  .home-hero-layer,
+  .btn.home-main-btn,
+  .home-main-btn-label,
+  .home-leaving {
+    transition: none;
+  }
+
+  .home-hero-spin {
     animation: none;
   }
 }
 
 .home-hero-status {
+  display: block;
   position: relative;
   z-index: 1;
   font-size: 15px;
@@ -309,6 +385,7 @@ body {
 }
 
 .home-hero-timer {
+  display: block;
   position: relative;
   z-index: 1;
   font-size: clamp(64px, 18vw, 128px);
@@ -353,6 +430,10 @@ body {
   pointer-events: none;
 }
 
+.home-hero-play:disabled {
+  cursor: default;
+}
+
 .home-hero-play:hover .home-hero-play-icon,
 .home-hero-play:focus-visible .home-hero-play-icon {
   opacity: 0.16;
@@ -360,6 +441,10 @@ body {
 
 .home-hero-play:active .home-hero-play-icon {
   opacity: 0.22;
+}
+
+.home-hero--running .home-hero-play .home-hero-play-icon {
+  opacity: 0;
 }
 
 .home-hero-title {
