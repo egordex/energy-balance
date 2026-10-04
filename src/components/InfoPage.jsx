@@ -1,10 +1,10 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 const BOOK_BASE_WIDTH = 112
 const BOOK_MIN_WIDTH = 64
 const BOOK_BOTTOM_GAP = 12
 
-export default function InfoPage() {
+export default function InfoPage({ scrollTo }) {
   const bookRef = useRef(null)
   const bookBtnRef = useRef(null)
   const [bookWidth, setBookWidth] = useState(BOOK_BASE_WIDTH)
@@ -34,6 +34,11 @@ export default function InfoPage() {
     window.addEventListener('resize', fit)
     return () => window.removeEventListener('resize', fit)
   }, [])
+
+  useEffect(() => {
+    if (!scrollTo) return
+    document.getElementById(scrollTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [scrollTo])
 
   return (
     <div className="info-page">
@@ -98,6 +103,31 @@ export default function InfoPage() {
           </ol>
           <p className="info-motto">
             Цель — не&nbsp;работать больше, а&nbsp;работать устойчиво: найти свою норму и&nbsp;не&nbsp;выходить за&nbsp;неё системно.
+          </p>
+        </div>
+      </div>
+
+      <div className="info-section" id="recovery">
+        <h2 className="info-section-title">Восстановление после глубокой работы</h2>
+        <div className="info-text">
+          <p>
+            Мозг способен на&nbsp;глубокую работу {'3\u2060–\u20605'}&nbsp;часов в&nbsp;сутки. Когда дневная порция набрана — стоп: дальше только задачи без&nbsp;сильной нагрузки — правки, созвоны, почта.
+          </p>
+          <p>
+            Сколько нужно на&nbsp;восстановление: <strong>часы глубокой работы ÷ 2 + 1</strong>. Это минимум лёгкой активности и&nbsp;отдыха до&nbsp;следующего дня, чтобы не&nbsp;уходить в&nbsp;дефицит.
+          </p>
+          <ul>
+            <li>2&nbsp;ч глубокой работы → 2–3&nbsp;ч щадящего режима</li>
+            <li>4&nbsp;ч глубокой работы → 3–4&nbsp;ч лёгких дел и&nbsp;удлинённый сон</li>
+          </ul>
+          <p>Как восстанавливаться:</p>
+          <ul>
+            <li>не&nbsp;жертвовать сном в&nbsp;день высокой нагрузки</li>
+            <li>дольше побыть в&nbsp;режиме ничегонеделания</li>
+            <li>не&nbsp;требовать от&nbsp;себя продуктивности вечером</li>
+          </ul>
+          <p className="info-motto">
+            Когда дневная порция набрана, приложение подскажет время восстановления на&nbsp;главном экране.
           </p>
         </div>
       </div>

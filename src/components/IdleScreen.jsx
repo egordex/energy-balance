@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import RecoveryInfoSheet from './RecoveryInfoSheet'
 import { dayKey } from '../utils/dates'
 import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm } from '../utils/analytics'
 
@@ -39,8 +40,8 @@ function formatTimer(totalSeconds) {
   return `${mm}:${ss}`
 }
 
-export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunning, elapsed }) {
-  const [showRecoveryTip, setShowRecoveryTip] = useState(false)
+export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sessions, isRunning, elapsed }) {
+  const [showRecoveryInfo, setShowRecoveryInfo] = useState(false)
   const summary = useMemo(() => computeHomeSummary(sessions), [sessions])
   const norm = useMemo(() => computePersonalNorm(getSessionsLast30Days(sessions)), [sessions])
 
@@ -109,7 +110,7 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
                   <button
                     type="button"
                     className="home-recovery-tip-btn"
-                    onClick={() => setShowRecoveryTip(!showRecoveryTip)}
+                    onClick={() => setShowRecoveryInfo(true)}
                     aria-label="Как рассчитывается время восстановления?"
                   >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -117,11 +118,6 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
                     </svg>
                   </button>
                 </div>
-                {showRecoveryTip && (
-                  <p className="home-recovery-tip-text">
-                    Когда дневная порция глубокой работы набрана, мозгу нужно время восстановиться: часы глубокой работы ÷ 2 + 1. Столько как минимум стоит провести за&nbsp;лёгкими делами и&nbsp;отдыхом. А&nbsp;сон в&nbsp;такой день лучше не&nbsp;сокращать, а&nbsp;по&nbsp;возможности удлинить. По&nbsp;методике Екатерины Конновой («Атлант устал»).
-                  </p>
-                )}
               </div>
             )}
           </div>
@@ -147,6 +143,12 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
           )}
         </div>
       </div>
+      {showRecoveryInfo && (
+        <RecoveryInfoSheet
+          onClose={() => setShowRecoveryInfo(false)}
+          onMore={() => { setShowRecoveryInfo(false); onOpenInfo('recovery') }}
+        />
+      )}
     </div>
   )
 }

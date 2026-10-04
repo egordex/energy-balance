@@ -148,6 +148,7 @@ export default function App() {
   const toastId = useRef(0)
   const [sessions, setSessions] = useState(loadSessions)
   const [editingId, setEditingId] = useState(null)
+  const [infoAnchor, setInfoAnchor] = useState(null)
   const intervalRef = useRef(null)
   // Don't replay reminders for blocks that elapsed while the app was closed
   const lastReminderRef = useRef(Math.floor(elapsed / REMINDER_INTERVAL))
@@ -322,6 +323,7 @@ export default function App() {
   function handleNavigate(target) {
     if (view === VIEW.RUNNING) { showNavHint(); return }
     if (view === VIEW.FORM || view === VIEW.MANUAL || view === VIEW.EDIT) return
+    setInfoAnchor(null)
     setPage(target)
   }
 
@@ -342,6 +344,7 @@ export default function App() {
             onStart={handleStart}
             onStop={handleStop}
             onManual={() => setView(VIEW.MANUAL)}
+            onOpenInfo={(anchor) => { setInfoAnchor(anchor); setPage('info') }}
             sessions={sessions}
             isRunning={isRunning}
             elapsed={elapsed}
@@ -354,7 +357,7 @@ export default function App() {
           <ManualSessionForm onSave={handleManualSave} onCancel={() => setView(VIEW.IDLE)} />
         )}
         {page === 'analytics' && <Analytics />}
-        {page === 'info' && <InfoPage />}
+        {page === 'info' && <InfoPage scrollTo={infoAnchor} />}
         {page === 'history' && view !== VIEW.EDIT && (
           <HistoryPage
             sessions={sessions}
