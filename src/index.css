@@ -741,6 +741,11 @@ body {
   scroll-margin-top: 16px;
 }
 
+.info-sheet .install-title {
+  text-align: left;
+  padding-right: 32px;
+}
+
 .info-sheet {
   padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
 }
