@@ -47,6 +47,7 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
   const [showRecoveryInfo, setShowRecoveryInfo] = useState(false)
   const cardRef = useRef(null)
   const lastCardTop = useRef(null)
+  const centerRef = useRef(null)
   // Idle-only card content (text, hints, second button) stays in the layout for a moment after
   // start so it can fade out; only then is it removed and the card slides down.
   const [idleExtrasGone, setIdleExtrasGone] = useState(isRunning)
@@ -67,6 +68,11 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
     const prevTop = lastCardTop.current
     if (!card || prevTop === null) return
     const delta = prevTop - card.getBoundingClientRect().top
+    // The card moved down by -delta, so the hero grew and its centered content slid down by half of that.
+    // Cancel that, so the spinner and timer stay exactly where the title was.
+    if (centerRef.current) {
+      centerRef.current.style.transform = idleExtrasGone ? `translateY(${delta / 2}px)` : ''
+    }
     if (Math.abs(delta) < 1 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     card.style.transition = 'none'
     card.style.transform = `translateY(${delta}px)`
@@ -123,6 +129,7 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
         <button
           type="button"
           className="home-hero-center home-hero-play"
+          ref={centerRef}
           onClick={onStart}
           disabled={isRunning}
           aria-label={isRunning ? undefined : 'Начать рабочую сессию'}
