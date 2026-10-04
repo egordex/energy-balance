@@ -229,7 +229,8 @@ function formatHours(h) {
 export function formatRecoveryRange(deepSeconds) {
   const range = computeRecoveryRange(deepSeconds)
   if (!range) return null
-  return `${formatHours(range.min)}–${formatHours(range.max)} ч`
+  // word joiners + nbsp keep the range on one line
+  return `${formatHours(range.min)}\u2060–\u2060${formatHours(range.max)}\u00A0ч`
 }
 
 export function formatSeconds(s) {

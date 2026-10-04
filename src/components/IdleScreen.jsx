@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { dayKey, mondayKey } from '../utils/dates'
-import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm, computeNormProgress } from '../utils/analytics'
+import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm, computeNormProgress, computeStreak } from '../utils/analytics'
 
 function computeHomeSummary(sessions) {
   if (sessions.length === 0) return null
@@ -30,6 +30,34 @@ function computeHomeSummary(sessions) {
   return { todaySeconds, todayDeepSeconds, weekSeconds, weekDeepSeconds, weekSessions }
 }
 
+// 12 ticks clockwise from the top: [x1, y1, x2, y2, color while a session is running]
+const TICKS = [
+  [100, 18, 100, 3, 'rgba(126,204,232,0.5)'],
+  [141, 29, 149, 16, 'rgba(162,220,240,0.45)'],
+  [171, 59, 184, 52, 'rgba(184,229,245,0.4)'],
+  [182, 100, 197, 100, 'rgba(130,208,234,0.45)'],
+  [171, 141, 184, 149, 'rgba(90,185,222,0.4)'],
+  [141, 171, 149, 184, 'rgba(61,156,204,0.45)'],
+  [100, 182, 100, 197, 'rgba(45,125,181,0.5)'],
+  [59, 171, 52, 184, 'rgba(38,79,138,0.45)'],
+  [29, 141, 16, 149, 'rgba(30,58,110,0.5)'],
+  [18, 100, 3, 100, 'rgba(26,45,85,0.45)'],
+  [29, 59, 16, 52, 'rgba(31,63,114,0.4)'],
+  [59, 29, 52, 16, 'rgba(66,114,165,0.45)'],
+]
+
+// The ring is full at the norm's upper bound; without a norm yet, at 4 h, the middle of the
+// "3–5 hours of deep work" the book describes. It is only a scale, not a limit.
+const DEFAULT_RING_HOURS = 4
+
+function plural(n, one, few, many) {
+  const mod10 = n % 10
+  const mod100 = n % 100
+  if (mod10 === 1 && mod100 !== 11) return one
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few
+  return many
+}
+
 function formatTimer(totalSeconds) {
   const h = Math.floor(totalSeconds / 3600)
   const m = Math.floor((totalSeconds % 3600) / 60)
@@ -49,6 +77,19 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
   const overNorm =
     summary && norm && norm.maxHours !== null && summary.todayDeepSeconds / 3600 > norm.maxHours
   const recoveryRange = summary ? formatRecoveryRange(summary.todayDeepSeconds) : null
+  const streak = useMemo(() => computeStreak(sessions), [sessions])
+
+  const todayDeep = summary ? summary.todayDeepSeconds : 0
+  const ringHours = norm ? (norm.maxHours ?? norm.minHours + 1) : DEFAULT_RING_HOURS
+  const filledTicks = todayDeep > 0 ? Math.min(12, Math.max(1, Math.ceil((todayDeep / (ringHours * 3600)) * 12))) : 0
+  const ringCaption = norm
+    ? `ваша норма — ${norm.maxHours === null ? `${norm.minHours}+ ч` : `${norm.minHours}–${norm.maxHours} ч`}`
+    : 'ориентир: 3–5 ч глубокой работы'
+  const recoveryText = recoveryRange
+    ? overNorm
+      ? `Выше вашей нормы (${norm.minHours}–${norm.maxHours} ч). Дальше ${recoveryRange} без сложных задач`
+      : `После ${formatSeconds(todayDeep)} глубокой работы: ${recoveryRange} без сложных задач до конца дня`
+    : null
 
   return (
     <div className="home-wrap">
@@ -75,58 +116,72 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
           </g>
         </svg>
         {isRunning && <div className="home-hero-glow" />}
-        <div className={`home-hero-center${isRunning ? ' home-hero-center--running' : ''}`}>
-          <svg viewBox="0 0 200 200" className={`home-hero-spinner${isRunning ? ' home-hero-spinner--active' : ''}`}>
-            <line x1="100" y1="18" x2="100" y2="3" stroke="rgba(126,204,232,0.5)" strokeWidth="9" strokeLinecap="round" />
-            <line x1="141" y1="29" x2="149" y2="16" stroke="rgba(162,220,240,0.45)" strokeWidth="9" strokeLinecap="round" />
-            <line x1="171" y1="59" x2="184" y2="52" stroke="rgba(184,229,245,0.4)" strokeWidth="9" strokeLinecap="round" />
-            <line x1="182" y1="100" x2="197" y2="100" stroke="rgba(130,208,234,0.45)" strokeWidth="9" strokeLinecap="round" />
-            <line x1="171" y1="141" x2="184" y2="149" stroke="rgba(90,185,222,0.4)" strokeWidth="9" strokeLinecap="round" />
-            <line x1="141" y1="171" x2="149" y2="184" stroke="rgba(61,156,204,0.45)" strokeWidth="9" strokeLinecap="round" />
-            <line x1="100" y1="182" x2="100" y2="197" stroke="rgba(45,125,181,0.5)" strokeWidth="9" strokeLinecap="round" />
-            <line x1="59" y1="171" x2="52" y2="184" stroke="rgba(38,79,138,0.45)" strokeWidth="9" strokeLinecap="round" />
-            <line x1="29" y1="141" x2="16" y2="149" stroke="rgba(30,58,110,0.5)" strokeWidth="9" strokeLinecap="round" />
-            <line x1="18" y1="100" x2="3" y2="100" stroke="rgba(26,45,85,0.45)" strokeWidth="9" strokeLinecap="round" />
-            <line x1="29" y1="59" x2="16" y2="52" stroke="rgba(31,63,114,0.4)" strokeWidth="9" strokeLinecap="round" />
-            <line x1="59" y1="29" x2="52" y2="16" stroke="rgba(66,114,165,0.45)" strokeWidth="9" strokeLinecap="round" />
-          </svg>
-          {isRunning ? (
-            <>
-              <p className="home-hero-status">Рабочая сессия</p>
-              <h1 className="home-hero-timer">{formatTimer(elapsed)}</h1>
-            </>
-          ) : (
-            <h1 className="home-hero-title">Work Energy<br />Balance</h1>
-          )}
-        </div>
+        {isRunning ? (
+          <div className="home-hero-center home-hero-center--running">
+            <svg viewBox="0 0 200 200" className="home-hero-spinner home-hero-spinner--active">
+              {TICKS.map(([x1, y1, x2, y2, color]) => (
+                <line key={x1 + '-' + y1} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth="9" strokeLinecap="round" />
+              ))}
+            </svg>
+            <p className="home-hero-status">Рабочая сессия</p>
+            <h1 className="home-hero-timer">{formatTimer(elapsed)}</h1>
+          </div>
+        ) : (
+          <>
+            <p className="home-hero-brand">Work Energy Balance</p>
+            {streak >= 2 && (
+              <p className="home-hero-streak">
+                🔥 серия {streak}&nbsp;{plural(streak, 'день', 'дня', 'дней')}
+              </p>
+            )}
+            <div className="home-gauge">
+              <div
+                className="home-gauge-ring"
+                role="img"
+                aria-label={`Глубокая работа сегодня: ${formatSeconds(todayDeep)}, ${ringCaption}`}
+              >
+                <svg viewBox="0 0 200 200">
+                  {TICKS.map(([x1, y1, x2, y2], i) => (
+                    <line
+                      key={i}
+                      x1={x1} y1={y1} x2={x2} y2={y2}
+                      stroke={i < filledTicks ? '#8fd3f0' : 'rgba(255,255,255,0.2)'}
+                      strokeWidth="9"
+                      strokeLinecap="round"
+                    />
+                  ))}
+                </svg>
+                <div className="home-gauge-center">
+                  {todayDeep > 0 ? (
+                    <>
+                      <span className="home-gauge-value">{formatSeconds(todayDeep)}</span>
+                      <span className="home-gauge-label">глубокой работы сегодня</span>
+                    </>
+                  ) : (
+                    <span className="home-gauge-label">Начните — кольцо заполнится</span>
+                  )}
+                </div>
+              </div>
+              <p className="home-gauge-caption">{ringCaption}</p>
+            </div>
+          </>
+        )}
       </div>
       <div className="home-card">
         {!isRunning && summary ? (
           <div className="home-summary">
-            <div className="home-summary-row">
-              <div className="home-summary-item">
-                <span className="home-summary-value">{formatSeconds(summary.todayDeepSeconds)}</span>
-                <span className="home-summary-label">Глубокая · сегодня</span>
-                <span className="home-summary-total">всего {formatSeconds(summary.todaySeconds)}</span>
-              </div>
-              <div className="home-summary-divider" />
-              <div className="home-summary-item">
-                <span className="home-summary-value">{formatSeconds(summary.weekDeepSeconds)}</span>
-                <span className="home-summary-label">Глубокая · неделя</span>
-                <span className="home-summary-total">всего {formatSeconds(summary.weekSeconds)}</span>
-              </div>
-            </div>
-            {recoveryRange && (
-              <div className="home-recovery-hint">
+            <p className="home-week-line">
+              За неделю: <strong>{formatSeconds(summary.weekDeepSeconds)}</strong> глубокой
+            </p>
+            {recoveryText ? (
+              <div className={`home-recovery-hint${overNorm ? ' home-recovery-hint--over' : ''}`}>
                 <div className="home-recovery-hint-row">
-                  <span>
-                    После {formatSeconds(summary.todayDeepSeconds)} глубокой работы: {recoveryRange} без&nbsp;сложных задач до&nbsp;конца дня
-                  </span>
+                  <span>{recoveryText}</span>
                   <button
                     type="button"
                     className="home-recovery-tip-btn"
                     onClick={() => setShowRecoveryTip(!showRecoveryTip)}
-                    aria-label="Как рассчитывается норма восстановления?"
+                    aria-label="Как рассчитывается время восстановления?"
                   >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
@@ -139,16 +194,12 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
                   </p>
                 )}
               </div>
-            )}
-            {!norm && (
-              <p className="home-norm-progress">
-                До вашей нормы: {normProgress.ratedDays} из&nbsp;{normProgress.target} дней с&nbsp;оценкой состояния
-              </p>
-            )}
-            {overNorm && (
-              <p className="home-norm-hint">
-                Сегодня уже больше вашей нормы ({norm.minHours}–{norm.maxHours} ч)
-              </p>
+            ) : (
+              !norm && (
+                <p className="home-norm-progress">
+                  До вашей нормы: {normProgress.ratedDays} из&nbsp;{normProgress.target} дней с&nbsp;оценкой состояния
+                </p>
+              )
             )}
           </div>
         ) : !isRunning ? (
