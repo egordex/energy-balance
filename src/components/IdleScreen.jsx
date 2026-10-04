@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { dayKey } from '../utils/dates'
-import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm, computeNormProgress } from '../utils/analytics'
+import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm } from '../utils/analytics'
 
 function computeHomeSummary(sessions) {
   if (sessions.length === 0) return null
@@ -29,10 +29,6 @@ const TICKS = [
   [59, 29, 52, 16, 'rgba(66,114,165,0.45)'],
 ]
 
-// The ring is full at the norm's upper bound; without a norm yet, at 4 h, the middle of the
-// "3–5 hours of deep work" the book describes. It is only a scale, not a limit.
-const DEFAULT_RING_HOURS = 4
-
 function formatTimer(totalSeconds) {
   const h = Math.floor(totalSeconds / 3600)
   const m = Math.floor((totalSeconds % 3600) / 60)
@@ -47,18 +43,12 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
   const [showRecoveryTip, setShowRecoveryTip] = useState(false)
   const summary = useMemo(() => computeHomeSummary(sessions), [sessions])
   const norm = useMemo(() => computePersonalNorm(getSessionsLast30Days(sessions)), [sessions])
-  const normProgress = useMemo(() => computeNormProgress(getSessionsLast30Days(sessions)), [sessions])
 
   const overNorm =
     summary && norm && norm.maxHours !== null && summary.todayDeepSeconds / 3600 > norm.maxHours
   const recoveryRange = summary ? formatRecoveryRange(summary.todayDeepSeconds) : null
 
   const todayDeep = summary ? summary.todayDeepSeconds : 0
-  const ringHours = norm ? (norm.maxHours ?? norm.minHours + 1) : DEFAULT_RING_HOURS
-  const filledTicks = todayDeep > 0 ? Math.min(12, Math.max(1, Math.ceil((todayDeep / (ringHours * 3600)) * 12))) : 0
-  const ringCaption = norm
-    ? `ваша норма — ${norm.maxHours === null ? `${norm.minHours}+ ч` : `${norm.minHours}–${norm.maxHours} ч`}`
-    : 'ориентир: 3–5 ч глубокой работы'
   const recoveryText = recoveryRange
     ? overNorm
       ? `Выше вашей нормы (${norm.minHours}–${norm.maxHours} ч). Дальше ${recoveryRange} без сложных задач`
@@ -90,56 +80,29 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
           </g>
         </svg>
         {isRunning && <div className="home-hero-glow" />}
-        {isRunning ? (
-          <div className="home-hero-center home-hero-center--running">
-            <svg viewBox="0 0 200 200" className="home-hero-spinner home-hero-spinner--active">
-              {TICKS.map(([x1, y1, x2, y2, color]) => (
-                <line key={x1 + '-' + y1} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth="9" strokeLinecap="round" />
-              ))}
-            </svg>
-            <p className="home-hero-status">Рабочая сессия</p>
-            <h1 className="home-hero-timer">{formatTimer(elapsed)}</h1>
-          </div>
-        ) : (
-          <>
-            <p className="home-hero-brand">Work Energy Balance</p>
-            <div className="home-gauge">
-              <div
-                className="home-gauge-ring"
-                role="img"
-                aria-label={`Глубокая работа сегодня: ${formatSeconds(todayDeep)}, ${ringCaption}`}
-              >
-                <svg viewBox="0 0 200 200">
-                  {TICKS.map(([x1, y1, x2, y2], i) => (
-                    <line
-                      key={i}
-                      x1={x1} y1={y1} x2={x2} y2={y2}
-                      stroke={i < filledTicks ? '#8fd3f0' : 'rgba(255,255,255,0.2)'}
-                      strokeWidth="9"
-                      strokeLinecap="round"
-                    />
-                  ))}
-                </svg>
-                <div className="home-gauge-center">
-                  {todayDeep > 0 ? (
-                    <>
-                      <span className="home-gauge-value">{formatSeconds(todayDeep)}</span>
-                      <span className="home-gauge-label">глубокой работы сегодня</span>
-                    </>
-                  ) : (
-                    <span className="home-gauge-label">Начните — кольцо заполнится</span>
-                  )}
-                </div>
-              </div>
-              <p className="home-gauge-caption">{ringCaption}</p>
-            </div>
-          </>
-        )}
+        <div className={`home-hero-center${isRunning ? ' home-hero-center--running' : ''}`}>
+          <svg viewBox="0 0 200 200" className={`home-hero-spinner${isRunning ? ' home-hero-spinner--active' : ''}`}>
+            {TICKS.map(([x1, y1, x2, y2, color]) => (
+              <line key={x1 + '-' + y1} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeWidth="9" strokeLinecap="round" />
+            ))}
+          </svg>
+          {isRunning ? (
+            <>
+              <p className="home-hero-status">Рабочая сессия</p>
+              <h1 className="home-hero-timer">{formatTimer(elapsed)}</h1>
+            </>
+          ) : (
+            <h1 className="home-hero-title">Work Energy<br />Balance</h1>
+          )}
+        </div>
       </div>
       <div className="home-card">
-        {!isRunning && summary ? (
+        {!isRunning && todayDeep > 0 ? (
           <div className="home-summary">
-            {recoveryText ? (
+            <p className="home-today-line">
+              Сегодня глубокой работы: <strong>{formatSeconds(todayDeep)}</strong>
+            </p>
+            {recoveryText && (
               <div className={`home-recovery-hint${overNorm ? ' home-recovery-hint--over' : ''}`}>
                 <div className="home-recovery-hint-row">
                   <span>{recoveryText}</span>
@@ -160,15 +123,9 @@ export default function IdleScreen({ onStart, onStop, onManual, sessions, isRunn
                   </p>
                 )}
               </div>
-            ) : (
-              !norm && (
-                <p className="home-norm-progress">
-                  До вашей нормы: {normProgress.ratedDays} из&nbsp;{normProgress.target} дней с&nbsp;оценкой состояния
-                </p>
-              )
             )}
           </div>
-        ) : !isRunning ? (
+        ) : !isRunning && !summary ? (
           <p className="home-card-text">
             Сколько часов глубокой работы – ваш предел? Отслеживайте и находите свою норму.
           </p>
