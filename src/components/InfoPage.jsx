@@ -43,13 +43,11 @@ export default function InfoPage() {
 
       <div className="info-section info-book-section">
         <div className="info-book-shadow" ref={bookRef} style={{ width: bookWidth }}>
-          <div className="info-book-clip">
-            <img
-              src="/book-cover-atlant.png"
-              alt="«Атлант устал», Екатерина Коннова"
-              className="info-book-img"
-            />
-          </div>
+          <img
+            src="/book-cover-atlant.png"
+            alt="«Атлант устал», Екатерина Коннова"
+            className="info-book-img"
+          />
         </div>
         <h2 className="info-section-title">Основано на книге</h2>
         <div className="info-text info-book-text">

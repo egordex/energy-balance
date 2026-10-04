@@ -1318,14 +1318,6 @@ body {
   transform: rotate(7deg);
 }
 
-.info-book-clip {
-  display: block;
-  overflow: hidden;
-  border-radius: 10px;
-  line-height: 0;
-  box-shadow: 0 12px 20px rgba(30, 45, 74, 0.35);
-}
-
 .info-book-img {
   display: block;
   width: 100%;
