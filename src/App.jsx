@@ -10,6 +10,7 @@ import InstallPrompt from './components/InstallPrompt'
 import Onboarding from './components/Onboarding'
 import { playStart, playReminder, playStop } from './utils/sound'
 import { formatRecoveryRange } from './utils/analytics'
+import { dayKey } from './utils/dates'
 
 const VIEW = { IDLE: 'idle', RUNNING: 'running', FORM: 'form', MANUAL: 'manual', EDIT: 'edit' }
 const REMINDER_INTERVAL = 30 * 60
@@ -225,9 +226,9 @@ export default function App() {
     setElapsed(0)
 
     if (session.depth === 'deep') {
-      const todayStr = session.startedAt.slice(0, 10)
+      const todayStr = dayKey(session.startedAt)
       const todayDeepSeconds = next
-        .filter((s) => s.startedAt.slice(0, 10) === todayStr && s.depth === 'deep')
+        .filter((s) => dayKey(s.startedAt) === todayStr && s.depth === 'deep')
         .reduce((sum, s) => sum + s.durationSeconds, 0)
       const range = formatRecoveryRange(todayDeepSeconds)
       showToast(range ? `Дальше ${range} без сложных задач` : undefined)

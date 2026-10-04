@@ -1,16 +1,12 @@
 import { useMemo, useState } from 'react'
+import { dayKey, mondayKey } from '../utils/dates'
 import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm, computeNormProgress } from '../utils/analytics'
 
 function computeHomeSummary(sessions) {
   if (sessions.length === 0) return null
 
-  const now = new Date()
-  const todayStr = now.toISOString().slice(0, 10)
-
-  const mondayDate = new Date(now)
-  const dow = mondayDate.getDay()
-  mondayDate.setDate(mondayDate.getDate() - ((dow + 6) % 7))
-  const mondayStr = mondayDate.toISOString().slice(0, 10)
+  const todayStr = dayKey()
+  const mondayStr = mondayKey()
 
   let todaySeconds = 0
   let todayDeepSeconds = 0
@@ -19,7 +15,7 @@ function computeHomeSummary(sessions) {
   let weekSessions = 0
 
   for (const s of sessions) {
-    const day = s.startedAt.slice(0, 10)
+    const day = dayKey(s.startedAt)
     if (day === todayStr) {
       todaySeconds += s.durationSeconds
       if (s.depth === 'deep') todayDeepSeconds += s.durationSeconds

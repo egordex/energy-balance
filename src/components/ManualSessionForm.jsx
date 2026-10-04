@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { dayKey, dayKeyToDate } from '../utils/dates'
 
 const WORK_TYPES = [
   'Стратегия',
@@ -25,12 +26,12 @@ const WELLBEING = [
 ]
 
 function todayString() {
-  return new Date().toISOString().slice(0, 10)
+  return dayKey()
 }
 
 // `initial` switches the form to editing an existing history entry
 export default function ManualSessionForm({ initial, onSave, onCancel }) {
-  const [date, setDate] = useState(initial ? initial.startedAt.slice(0, 10) : todayString())
+  const [date, setDate] = useState(initial ? dayKey(initial.startedAt) : todayString())
   const [hours, setHours] = useState(initial ? String(Math.floor(initial.durationSeconds / 3600)) : '')
   const [minutes, setMinutes] = useState(initial ? String(Math.floor((initial.durationSeconds % 3600) / 60)) : '')
   const [durationEdited, setDurationEdited] = useState(false)
@@ -56,9 +57,9 @@ export default function ManualSessionForm({ initial, onSave, onCancel }) {
     e.preventDefault()
     if (!canSave) return
     // Same day as before: keep the original time of day
-    const startedAt = initial && date === initial.startedAt.slice(0, 10)
+    const startedAt = initial && date === dayKey(initial.startedAt)
       ? initial.startedAt
-      : new Date(date).toISOString()
+      : dayKeyToDate(date).toISOString()
     onSave({
       startedAt,
       durationSeconds: totalSeconds,

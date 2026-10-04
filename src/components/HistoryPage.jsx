@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import SessionCard from './SessionCard'
+import { dayKey } from '../utils/dates'
 import { formatDayHeading, formatSessionDuration } from '../utils/format'
 
 function groupByDay(sessions) {
   const days = {}
   for (const s of sessions) {
-    const key = s.startedAt.slice(0, 10)
+    const key = dayKey(s.startedAt)
     if (!days[key]) days[key] = { key, items: [], totalSeconds: 0, deepSeconds: 0 }
     days[key].items.push(s)
     days[key].totalSeconds += s.durationSeconds

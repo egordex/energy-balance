@@ -1,3 +1,5 @@
+import { dayKey, dayKeyToDate, shiftDayKey } from './dates'
+
 const DEPTH_LABELS = { shallow: 'Поверхностная', medium: 'Средняя', deep: 'Глубокая' }
 
 export function formatSessionDate(iso) {
@@ -17,14 +19,11 @@ export function depthLabel(depth) {
   return DEPTH_LABELS[depth] || depth
 }
 
-// Day key is the UTC date (startedAt.slice(0, 10)), the same one "Сегодня" and the streak use,
-// so a day's header total always matches the rest of the app.
-export function formatDayHeading(dayKey) {
-  const todayKey = new Date().toISOString().slice(0, 10)
-  const yesterdayKey = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
-  const date = new Date(`${dayKey}T12:00:00`).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
-  if (dayKey === todayKey) return `Сегодня, ${date}`
-  if (dayKey === yesterdayKey) return `Вчера, ${date}`
+// Takes a local day key from utils/dates, the same one "Сегодня" and the streak use
+export function formatDayHeading(key) {
+  const date = dayKeyToDate(key).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
+  if (key === dayKey()) return `Сегодня, ${date}`
+  if (key === shiftDayKey(dayKey(), -1)) return `Вчера, ${date}`
   return date
 }
 

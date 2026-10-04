@@ -1,3 +1,5 @@
+import { dayKey, dayKeyToDate, shiftDayKey } from './dates'
+
 export function loadSessions() {
   return JSON.parse(localStorage.getItem('wct_sessions') || '[]')
 }
@@ -25,7 +27,7 @@ export function computeStats(sessions) {
 function groupByDay(sessions) {
   const byDay = {}
   for (const s of sessions) {
-    const day = s.startedAt.slice(0, 10)
+    const day = dayKey(s.startedAt)
     if (!byDay[day]) byDay[day] = { deepSeconds: 0, wellbeings: [] }
     if (s.depth === 'deep') byDay[day].deepSeconds += s.durationSeconds
     if (s.wellbeing != null) byDay[day].wellbeings.push(s.wellbeing)
@@ -105,7 +107,7 @@ export function computeInsights(sessions) {
   const dowWellbeings = Array.from({ length: 7 }, () => [])
   for (const [date, data] of days) {
     if (data.wellbeings.length === 0) continue
-    const dow = new Date(date).getDay()
+    const dow = dayKeyToDate(date).getDay()
     const avg = data.wellbeings.reduce((a, b) => a + b, 0) / data.wellbeings.length
     dowWellbeings[dow].push(avg)
   }
@@ -195,18 +197,16 @@ export function generateInsightTexts(insights) {
 
 export function computeStreak(sessions) {
   if (sessions.length === 0) return 0
-  const days = new Set(sessions.map((s) => s.startedAt.slice(0, 10)))
-  const today = new Date()
-  const todayStr = today.toISOString().slice(0, 10)
-  const d = new Date(today)
-  if (!days.has(todayStr)) {
-    d.setDate(d.getDate() - 1)
-    if (!days.has(d.toISOString().slice(0, 10))) return 0
+  const days = new Set(sessions.map((s) => dayKey(s.startedAt)))
+  let key = dayKey()
+  if (!days.has(key)) {
+    key = shiftDayKey(key, -1)
+    if (!days.has(key)) return 0
   }
   let streak = 0
-  while (days.has(d.toISOString().slice(0, 10))) {
+  while (days.has(key)) {
     streak++
-    d.setDate(d.getDate() - 1)
+    key = shiftDayKey(key, -1)
   }
   return streak
 }
