@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import RecoveryInfoSheet from './RecoveryInfoSheet'
 import { dayKey } from '../utils/dates'
 import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm } from '../utils/analytics'
@@ -42,6 +42,28 @@ function formatTimer(totalSeconds) {
 
 export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sessions, isRunning, elapsed }) {
   const [showRecoveryInfo, setShowRecoveryInfo] = useState(false)
+  const cardRef = useRef(null)
+  const lastCardTop = useRef(null)
+
+  // Starting a session shrinks the card to one button, so the blue hero grows. Animate it (FLIP):
+  // put the card back where it was, then let it slide down so the hero visibly fills the space.
+  useLayoutEffect(() => {
+    const card = cardRef.current
+    const prevTop = lastCardTop.current
+    if (!card || prevTop === null) return
+    const delta = prevTop - card.getBoundingClientRect().top
+    if (Math.abs(delta) < 1 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    card.style.transition = 'none'
+    card.style.transform = `translateY(${delta}px)`
+    card.getBoundingClientRect()
+    card.style.transition = 'transform 0.6s cubic-bezier(0.32, 0.72, 0, 1)'
+    card.style.transform = ''
+  }, [isRunning])
+
+  // Remember where the card was after every render, for the animation above
+  useLayoutEffect(() => {
+    if (cardRef.current) lastCardTop.current = cardRef.current.getBoundingClientRect().top
+  })
   const summary = useMemo(() => computeHomeSummary(sessions), [sessions])
   const norm = useMemo(() => computePersonalNorm(getSessionsLast30Days(sessions)), [sessions])
 
@@ -105,7 +127,7 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
           </button>
         )}
       </div>
-      <div className="home-card">
+      <div className="home-card" ref={cardRef}>
         {!isRunning && todayDeep > 0 ? (
           <div className="home-summary">
             <p className="home-today-line">
@@ -136,7 +158,7 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
         ) : null}
         <div className="home-card-actions">
           {isRunning ? (
-            <button className="btn btn-stop" onClick={onStop}>
+            <button className="btn btn-stop home-appear" onClick={onStop}>
               Завершить
             </button>
           ) : (
