@@ -106,7 +106,7 @@ export default function Analytics() {
           </div>
           <span className="norm-sub">
             {normProgress.ratedDays < normProgress.target
-              ? `${normProgress.ratedDays} из ${normProgress.target} дней с оценкой состояния. Оценивайте состояние после каждой сессии — без неё день не попадёт в расчёт.`
+              ? `${normProgress.ratedDays} из ${normProgress.target} дней с оценкой состояния`
               : 'Дней хватает, но нагрузка в них сильно разная. Продолжайте записи: норма появится, когда в одном диапазоне часов будет два дня с оценкой.'}
           </span>
         </div>
