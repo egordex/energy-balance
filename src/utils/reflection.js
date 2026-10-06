@@ -26,6 +26,7 @@ export function loadRecoveryChecks() {
   return read(CHECKS_KEY, {})
 }
 
+// answer is one of RECOVERY_ANSWERS, or 'skipped' when a session was started instead
 export function saveRecoveryCheck(workDay, answer) {
   localStorage.setItem(CHECKS_KEY, JSON.stringify({ ...loadRecoveryChecks(), [workDay]: answer }))
 }
@@ -54,6 +55,7 @@ export function computeRecoveryStats(sessions, norm) {
   }
   let total = 0
   for (const [day, answer] of Object.entries(checks)) {
+    if (!RECOVERY_ANSWERS.some((a) => a.value === answer)) continue // 'skipped'
     const hours = deepSecondsOn(sessions, day) / 3600
     if (hours === 0) continue
     const heavy = norm ? norm.maxHours !== null && hours > norm.maxHours : hours >= 3

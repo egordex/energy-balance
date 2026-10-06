@@ -533,6 +533,20 @@ body {
   font-weight: 500;
 }
 
+/* Normal card content coming back after the recovery question */
+.home-enter {
+  animation: home-enter 0.35s ease backwards;
+}
+
+@keyframes home-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-enter { animation: none; }
+}
+
 /* Next-day question: did yesterday's rest restore you? */
 .home-check {
   width: 100%;

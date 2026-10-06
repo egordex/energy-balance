@@ -55,6 +55,7 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
   const cardRef = useRef(null)
   const lastCardTop = useRef(null)
   const centerRef = useRef(null)
+  const extrasGoneAtLastFlip = useRef(null)
   // Idle-only card content (text, hints, second button) stays in the layout for a moment after
   // start so it can fade out; only then is it removed and the card slides down.
   const [idleExtrasGone, setIdleExtrasGone] = useState(isRunning)
@@ -68,6 +69,43 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
     return () => clearTimeout(t)
   }, [isRunning])
 
+  // Asked once per day after a day with deep work, on its own in the card (no start buttons), so
+  // it gets answered. 'ask' → 'reply' (short reaction) → 'done'. Starting a session from the hero
+  // instead skips it for today: 'skipped' until the question has faded out, then 'done'.
+  const [recoveryCheck] = useState(() => pendingRecoveryCheck(sessions))
+  const [checkPhase, setCheckPhase] = useState(recoveryCheck ? 'ask' : 'done')
+  const [revealed, setRevealed] = useState(false)
+
+  function answerRecoveryCheck(answer) {
+    saveRecoveryCheck(recoveryCheck.day, answer)
+    setRecoveryReply(answer)
+    setCheckPhase('reply')
+  }
+  const [recoveryReply, setRecoveryReply] = useState(null)
+
+  useEffect(() => {
+    if (!isRunning) return
+    if (checkPhase === 'ask') saveRecoveryCheck(recoveryCheck.day, 'skipped')
+    if (checkPhase === 'ask' || checkPhase === 'reply') {
+      setRevealed(true)
+      setCheckPhase('skipped')
+    }
+  }, [isRunning]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (checkPhase === 'reply') {
+      const t = setTimeout(() => {
+        setRevealed(true)
+        setCheckPhase('done')
+      }, 2600)
+      return () => clearTimeout(t)
+    }
+    if (checkPhase === 'skipped' && idleExtrasGone) setCheckPhase('done')
+  }, [checkPhase, idleExtrasGone])
+
+  const asking = checkPhase === 'ask' || checkPhase === 'reply' || (checkPhase === 'skipped' && !idleExtrasGone)
+  const enter = revealed ? ' home-enter' : ''
+
   // Removing that content shrinks the card, so the blue hero grows. Animate it (FLIP): put the
   // card back where it was, then let it slide down so the hero visibly fills the space.
   useLayoutEffect(() => {
@@ -77,7 +115,8 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
     const delta = prevTop - card.getBoundingClientRect().top
     // The card moved down by -delta, so the hero grew and its centered content slid down by half of that.
     // Cancel that, so the spinner and timer stay exactly where the title was.
-    if (centerRef.current) {
+    if (centerRef.current && extrasGoneAtLastFlip.current !== idleExtrasGone) {
+      extrasGoneAtLastFlip.current = idleExtrasGone
       centerRef.current.style.transform = idleExtrasGone ? `translateY(${delta / 2}px)` : ''
     }
     if (Math.abs(delta) < 1 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -86,21 +125,13 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
     card.getBoundingClientRect()
     card.style.transition = 'transform 0.6s cubic-bezier(0.32, 0.72, 0, 1)'
     card.style.transform = ''
-  }, [idleExtrasGone])
+  }, [idleExtrasGone, checkPhase])
 
   // Remember where the card was after every render, for the animation above
   useLayoutEffect(() => {
     if (cardRef.current) lastCardTop.current = cardRef.current.getBoundingClientRect().top
   })
   const summary = useMemo(() => computeHomeSummary(sessions), [sessions])
-  // Asked once per day after a day with deep work; the answer stays on screen until the next visit
-  const [recoveryCheck] = useState(() => pendingRecoveryCheck(sessions))
-  const [recoveryAnswer, setRecoveryAnswer] = useState(null)
-
-  function answerRecoveryCheck(answer) {
-    saveRecoveryCheck(recoveryCheck.day, answer)
-    setRecoveryAnswer(answer)
-  }
   const norm = useMemo(() => computePersonalNorm(getSessionsLast30Days(sessions)), [sessions])
 
   const overNorm =
@@ -171,10 +202,10 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
         </button>
       </div>
       <div className="home-card" ref={cardRef}>
-        {!idleExtrasGone && recoveryCheck && (
+        {asking ? (
           <div className={`home-check home-leaving${isRunning ? ' is-leaving' : ''}`}>
-            {recoveryAnswer ? (
-              <p className="home-check-reply">{RECOVERY_REPLIES[recoveryAnswer]}</p>
+            {recoveryReply ? (
+              <p className="home-check-reply">{RECOVERY_REPLIES[recoveryReply]}</p>
             ) : (
               <>
                 <p className="home-check-question">Восстановились после вчерашней работы?</p>
@@ -189,9 +220,10 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
               </>
             )}
           </div>
-        )}
+        ) : (
+        <>
         {!idleExtrasGone && todayDeep > 0 ? (
-          <div className={`home-summary home-leaving${isRunning ? ' is-leaving' : ''}`}>
+          <div className={`home-summary home-leaving${isRunning ? ' is-leaving' : ''}${enter}`}>
             <p className="home-today-line">
               Сегодня глубокой работы: <strong>{formatSeconds(todayDeep)}</strong>
             </p>
@@ -217,11 +249,11 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
             )}
           </div>
         ) : !idleExtrasGone && !summary ? (
-          <p className={`home-card-text home-leaving${isRunning ? ' is-leaving' : ''}`}>
+          <p className={`home-card-text home-leaving${isRunning ? ' is-leaving' : ''}${enter}`}>
             Сколько часов глубокой работы – ваш предел? Отслеживайте и находите свою норму.
           </p>
         ) : null}
-        <div className="home-card-actions">
+        <div className={`home-card-actions${enter}`}>
           {/* One button for both states: it rides down with the card and turns from "start" into "stop" */}
           <button
             className={`btn home-main-btn ${isRunning ? 'btn-stop' : 'btn-primary'}`}
@@ -240,6 +272,8 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
             </button>
           )}
         </div>
+        </>
+        )}
       </div>
       {showRecoveryInfo && (
         <RecoveryInfoSheet
