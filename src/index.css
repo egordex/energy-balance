@@ -526,6 +526,72 @@ body {
   color: var(--text-muted);
 }
 
+.home-recovery-joy {
+  display: block;
+  margin-top: 4px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Next-day question: did yesterday's rest restore you? */
+.home-check {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface-hover);
+  border-radius: var(--radius);
+  padding: 14px 14px 12px;
+  text-align: center;
+}
+
+.home-check-question {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.home-check-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.home-check-options {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.home-check-option {
+  flex: 1;
+  min-height: 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.home-check-option:hover {
+  border-color: var(--accent);
+}
+
+.home-check-option:active {
+  background: var(--accent-dim);
+}
+
+.home-check-reply {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
 .home-recovery-tip-btn {
   background: none;
   border: none;
@@ -1841,6 +1907,105 @@ input[type="date"].select {
   color: rgba(255, 255, 255, 0.8);
 }
 
+/* The user's own guess of their limit, compared with the norm once it's known */
+.norm-guess {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.norm-guess-question,
+.norm-guess-text {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.norm-guess-options {
+  display: flex;
+  gap: 6px;
+}
+
+.norm-guess-option {
+  flex: 1;
+  min-height: 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.norm-guess-option.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.norm-guess-edit {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.norm-guess-result {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.norm-guess-result-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.recovery-stats {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.recovery-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.recovery-stat-row + .recovery-stat-row {
+  border-top: 1px solid var(--border);
+}
+
+.recovery-stat-label {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.recovery-stat-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
 .streak-banner {
   background: var(--accent-dim);
   border-radius: var(--radius);
@@ -1930,6 +2095,13 @@ input[type="date"].select {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-muted);
+}
+
+.section-sub {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  margin-top: -4px;
 }
 
 .insight-list {

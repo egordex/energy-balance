@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
   loadSessions,
   getSessionsLast30Days,
@@ -11,6 +11,45 @@ import {
   computeStreak,
   formatSeconds,
 } from '../utils/analytics'
+import { computeRecoveryStats, loadNormGuess, saveNormGuess, compareGuessWithNorm } from '../utils/reflection'
+
+const GUESS_OPTIONS = [2, 3, 4, 5, 6, 7]
+
+function formatGuess(hours) {
+  return hours >= 7 ? '7+ ч' : `${hours} ч`
+}
+
+// Before the norm is known: let the user say what they think their limit is
+function NormGuess({ guess, onChange }) {
+  const [editing, setEditing] = useState(guess === null)
+  if (!editing) {
+    return (
+      <div className="norm-guess">
+        <span className="norm-guess-text">
+          Ваш прогноз: <strong>{formatGuess(guess)}</strong> в день. Сравним, когда норма будет готова.
+        </span>
+        <button type="button" className="norm-guess-edit" onClick={() => setEditing(true)}>Изменить</button>
+      </div>
+    )
+  }
+  return (
+    <div className="norm-guess">
+      <span className="norm-guess-question">Как думаете, сколько часов глубокой работы в день — ваш предел?</span>
+      <div className="norm-guess-options">
+        {GUESS_OPTIONS.map((h) => (
+          <button
+            key={h}
+            type="button"
+            className={`norm-guess-option${guess === h ? ' is-selected' : ''}`}
+            onClick={() => { onChange(h); setEditing(false) }}
+          >
+            {h >= 7 ? '7+' : h}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 function formatNormRange(norm) {
   return norm.maxHours === null ? `${norm.minHours}+ ч` : `${norm.minHours}–${norm.maxHours} ч`
@@ -59,11 +98,12 @@ function StateBar({ value }) {
 }
 
 export default function Analytics() {
-  const { stats, insights, insightTexts, hasData, streak, norm, normProgress, workTypeStats } = useMemo(() => {
+  const [guess, setGuess] = useState(loadNormGuess)
+  const { stats, insights, insightTexts, hasData, streak, norm, normProgress, workTypeStats, recoveryStats } = useMemo(() => {
     const all = loadSessions()
     const sessions = getSessionsLast30Days(all)
     if (sessions.length === 0) {
-      return { hasData: false, stats: null, insights: null, insightTexts: [], streak: 0, norm: null, normProgress: null, workTypeStats: [] }
+      return { hasData: false, stats: null, insights: null, insightTexts: [], streak: 0, norm: null, normProgress: null, workTypeStats: [], recoveryStats: null }
     }
     const stats = computeStats(sessions)
     const insights = computeInsights(sessions)
@@ -72,7 +112,8 @@ export default function Analytics() {
     const norm = computePersonalNorm(sessions)
     const normProgress = computeNormProgress(sessions)
     const workTypeStats = computeWorkTypeStats(sessions)
-    return { hasData: true, stats, insights, insightTexts, streak, norm, normProgress, workTypeStats }
+    const recoveryStats = computeRecoveryStats(sessions, norm)
+    return { hasData: true, stats, insights, insightTexts, streak, norm, normProgress, workTypeStats, recoveryStats }
   }, [])
 
   if (!hasData) {
@@ -109,6 +150,7 @@ export default function Analytics() {
               ? `${normProgress.ratedDays} из ${normProgress.target} дней с оценкой состояния`
               : 'Дней хватает, но нагрузка в них сильно разная. Продолжайте записи: норма появится, когда в одном диапазоне часов будет два дня с оценкой.'}
           </span>
+          <NormGuess guess={guess} onChange={(h) => { saveNormGuess(h); setGuess(h) }} />
         </div>
       )}
 
@@ -119,6 +161,12 @@ export default function Analytics() {
           <span className="norm-sub">
             В такие дни у вас лучшее самочувствие — {norm.avgState.toFixed(1)}/5
           </span>
+          {guess !== null && (
+            <div className="norm-guess-result">
+              <span className="norm-guess-result-title">{compareGuessWithNorm(guess, norm)}</span>
+              <span className="norm-sub">Вы предполагали: {formatGuess(guess)} в день</span>
+            </div>
+          )}
         </div>
       )}
 
@@ -153,6 +201,21 @@ export default function Analytics() {
           <div className="worktype-list">
             {workTypeStats.map((t, i) => (
               <WorkTypeRow key={t.workType} {...t} isTop={i === 0 && workTypeStats.length > 1} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {recoveryStats && (
+        <div className="insights-section">
+          <h2 className="section-title">Восстановление на следующий день</h2>
+          <p className="section-sub">Сколько раз вы полностью восстановились после такой нагрузки</p>
+          <div className="recovery-stats">
+            {recoveryStats.map((g) => (
+              <div key={g.label} className="recovery-stat-row">
+                <span className="recovery-stat-label">{g.label}</span>
+                <span className="recovery-stat-value">{g.yes} из {g.total}</span>
+              </div>
             ))}
           </div>
         </div>

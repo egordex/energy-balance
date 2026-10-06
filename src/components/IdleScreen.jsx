@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import RecoveryInfoSheet from './RecoveryInfoSheet'
 import { dayKey } from '../utils/dates'
 import { formatSeconds, formatRecoveryRange, getSessionsLast30Days, computePersonalNorm } from '../utils/analytics'
+import { RECOVERY_ANSWERS, pendingRecoveryCheck, saveRecoveryCheck } from '../utils/reflection'
 
 function computeHomeSummary(sessions) {
   if (sessions.length === 0) return null
@@ -29,6 +30,12 @@ const TICKS = [
   [29, 59, 16, 52, 'rgba(31,63,114,0.4)'],
   [59, 29, 52, 16, 'rgba(66,114,165,0.45)'],
 ]
+
+const RECOVERY_REPLIES = {
+  yes: 'Отлично: вчерашняя нагрузка вам по силам.',
+  partly: 'Учтём. Сегодня можно взять чуть меньше глубокой работы.',
+  no: 'Похоже, вчера было много. Сегодня лучше снизить нагрузку и не жертвовать сном.',
+}
 
 // How long idle-only content takes to fade out before the card starts sliding
 const FADE_OUT_MS = 180
@@ -86,6 +93,14 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
     if (cardRef.current) lastCardTop.current = cardRef.current.getBoundingClientRect().top
   })
   const summary = useMemo(() => computeHomeSummary(sessions), [sessions])
+  // Asked once per day after a day with deep work; the answer stays on screen until the next visit
+  const [recoveryCheck] = useState(() => pendingRecoveryCheck(sessions))
+  const [recoveryAnswer, setRecoveryAnswer] = useState(null)
+
+  function answerRecoveryCheck(answer) {
+    saveRecoveryCheck(recoveryCheck.day, answer)
+    setRecoveryAnswer(answer)
+  }
   const norm = useMemo(() => computePersonalNorm(getSessionsLast30Days(sessions)), [sessions])
 
   const overNorm =
@@ -156,6 +171,25 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
         </button>
       </div>
       <div className="home-card" ref={cardRef}>
+        {!idleExtrasGone && recoveryCheck && (
+          <div className={`home-check home-leaving${isRunning ? ' is-leaving' : ''}`}>
+            {recoveryAnswer ? (
+              <p className="home-check-reply">{RECOVERY_REPLIES[recoveryAnswer]}</p>
+            ) : (
+              <>
+                <p className="home-check-question">Восстановились после вчерашней работы?</p>
+                <p className="home-check-sub">Вчера глубокой работы: {formatSeconds(recoveryCheck.deepSeconds)}</p>
+                <div className="home-check-options">
+                  {RECOVERY_ANSWERS.map((a) => (
+                    <button key={a.value} type="button" className="home-check-option" onClick={() => answerRecoveryCheck(a.value)}>
+                      {a.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
         {!idleExtrasGone && todayDeep > 0 ? (
           <div className={`home-summary home-leaving${isRunning ? ' is-leaving' : ''}`}>
             <p className="home-today-line">
@@ -164,7 +198,10 @@ export default function IdleScreen({ onStart, onStop, onManual, onOpenInfo, sess
             {recoveryText && (
               <div className={`home-recovery-hint${overNorm ? ' home-recovery-hint--over' : ''}`}>
                 <div className="home-recovery-hint-row">
-                  <span>{recoveryText}</span>
+                  <span>
+                    {recoveryText}
+                    <span className="home-recovery-joy">Чем можно порадовать себя прямо сейчас?</span>
+                  </span>
                   <button
                     type="button"
                     className="home-recovery-tip-btn"
