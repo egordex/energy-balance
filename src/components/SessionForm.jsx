@@ -224,7 +224,7 @@ export default function SessionForm({ elapsed, onSave, onDiscard }) {
           <button
             type="button"
             onClick={onDiscard}
-            className="form-secondary-btn"
+            className="btn-manual btn-manual--form"
           >
             Удалить сессию
           </button>

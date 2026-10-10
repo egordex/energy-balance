@@ -1647,6 +1647,11 @@ body {
   transition: border-color 0.15s, color 0.15s;
 }
 
+.btn-manual.btn-manual--form {
+  max-width: none;
+  min-height: 48px;
+}
+
 .btn-manual:hover {
   border-color: var(--text-dim);
   color: var(--text);
