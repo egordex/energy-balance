@@ -237,7 +237,7 @@ export default function ManualSessionForm({ initial, onSave, onCancel }) {
           <button
             type="button"
             onClick={onCancel}
-            className="form-secondary-btn"
+            className="btn-manual btn-manual--form"
           >
             Отмена
           </button>
