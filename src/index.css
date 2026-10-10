@@ -625,7 +625,6 @@ body {
 
 .card {
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 40px 36px;
   width: 100%;
@@ -803,7 +802,6 @@ body {
   flex-direction: column;
   gap: 6px;
   background: var(--surface-hover);
-  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 12px 14px;
   font-size: 12px;
@@ -979,7 +977,6 @@ body {
 /* Install prompt */
 .install-card {
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius) var(--radius) 0 0;
   padding: 32px 24px 28px;
   width: 100%;
@@ -1077,7 +1074,6 @@ body {
 /* Session cards */
 .session-card {
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 14px 16px;
   display: flex;
@@ -1240,13 +1236,13 @@ body {
 
 .session-card--tappable {
   cursor: pointer;
-  transition: border-color 0.15s, transform 0.12s;
+  transition: background 0.15s, transform 0.12s;
   -webkit-tap-highlight-color: transparent;
 }
 
 .session-card--tappable:active {
   transform: scale(0.99);
-  border-color: var(--text-dim);
+  background: var(--surface-hover);
 }
 
 .session-card-type {
@@ -1508,7 +1504,6 @@ body {
 
 .info-section {
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px;
   display: flex;
@@ -1719,7 +1714,6 @@ body {
 
 .norm-card.norm-card--pending {
   background: var(--surface);
-  border: 1px solid var(--border);
   box-shadow: none;
 }
 
@@ -1992,7 +1986,6 @@ input[type="date"].select {
   display: flex;
   flex-direction: column;
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
 }
 
@@ -2040,7 +2033,6 @@ input[type="date"].select {
 
 .stat-card {
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px 16px;
   display: flex;
@@ -2129,7 +2121,6 @@ input[type="date"].select {
   align-items: flex-start;
   gap: 12px;
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 14px 16px;
 }
@@ -2157,7 +2148,6 @@ input[type="date"].select {
 
 .worktype-row {
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 12px 14px;
   display: flex;
@@ -2166,8 +2156,7 @@ input[type="date"].select {
 }
 
 .worktype-row--top {
-  border-color: rgba(201, 64, 64, 0.35);
-  background: rgba(201, 64, 64, 0.04);
+  background: #fcf0f0;
 }
 
 .worktype-row-top {
