@@ -174,7 +174,9 @@ body {
 .header-close-btn {
   position: absolute;
   top: 16px;
-  right: 0;
+  /* the header bleeds 16px past the content; the cross glyph sits 10px inside its 40px box,
+     so 6px puts the glyph's right edge on the same 16px line as the fields below */
+  right: 6px;
   background: none;
   border: none;
   width: 40px;
