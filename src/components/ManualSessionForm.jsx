@@ -1,15 +1,6 @@
 import { useState } from 'react'
 import { dayKey, dayKeyToDate } from '../utils/dates'
-
-const WORK_TYPES = [
-  'Стратегия',
-  'Создание (дизайн, код, текст)',
-  'Аналитика',
-  'Продажи',
-  'Встреча',
-  'Административная работа',
-  'Другое',
-]
+import { WORK_TYPES } from '../utils/workTypes'
 
 const DEPTH_OPTIONS = [
   { value: 'shallow', label: 'Поверхностная', icon: '〰️' },
