@@ -260,6 +260,12 @@ export default function App() {
       showToast()
     }
 
+    maybeShowInstall()
+  }
+
+  // The "add to home screen" hint is shown once, after the user's first finished session,
+  // whether they saved it or deleted it on the "Как поработали?" screen
+  function maybeShowInstall() {
     if (!localStorage.getItem('wct_install_shown')) {
       localStorage.setItem('wct_install_shown', '1')
       setShowInstall(true)
@@ -278,6 +284,7 @@ export default function App() {
     setView(VIEW.IDLE)
     setStartTime(null)
     setElapsed(0)
+    maybeShowInstall()
     showToast('Сессия удалена', {
       label: 'Вернуть',
       run: () => {
