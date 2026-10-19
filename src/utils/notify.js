@@ -4,7 +4,7 @@
 export function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {})
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => {})
   })
 }
 
@@ -25,8 +25,8 @@ export async function showReminderNotification(title, body) {
     const reg = await navigator.serviceWorker.ready
     await reg.showNotification(title, {
       body,
-      icon: '/icon-192.png',
-      badge: '/icon-192.png',
+      icon: `${import.meta.env.BASE_URL}icon-192.png`,
+      badge: `${import.meta.env.BASE_URL}icon-192.png`,
       tag: 'wct-reminder',
       renotify: true,
     })

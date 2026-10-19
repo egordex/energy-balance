@@ -49,7 +49,7 @@ export default function InfoPage({ scrollTo }) {
       <div className="info-section info-book-section">
         <div className="info-book-shadow" ref={bookRef} style={{ width: bookWidth }}>
           <img
-            src="/book-cover-atlant.png"
+            src={`${import.meta.env.BASE_URL}book-cover-atlant.png`}
             alt="«Атлант устал», Екатерина Коннова"
             className="info-book-img"
           />
