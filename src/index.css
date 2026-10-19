@@ -914,7 +914,7 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 16px;
+  padding: 16px 16px max(16px, env(safe-area-inset-bottom, 0px));
   animation: fadeIn 0.15s ease;
 }
 
@@ -985,7 +985,8 @@ body {
 /* Install prompt */
 .install-card {
   background: var(--surface);
-  border-radius: var(--radius) var(--radius) 0 0;
+  /* floats 16px above the bottom edge (see .overlay-backdrop), so every corner is rounded */
+  border-radius: 20px;
   padding: 32px 24px 28px;
   width: 100%;
   max-width: 460px;
