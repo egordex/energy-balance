@@ -7,6 +7,7 @@ import {
   generateInsightTexts,
   computePersonalNorm,
   computeNormProgress,
+  NORM_MIN_DAYS,
   computeWorkTypeStats,
   computeStreak,
   formatSeconds,
@@ -103,7 +104,7 @@ export default function Analytics() {
     const all = loadSessions()
     const sessions = getSessionsLast30Days(all)
     if (sessions.length === 0) {
-      return { hasData: false, stats: null, insights: null, insightTexts: [], streak: 0, norm: null, normProgress: null, workTypeStats: [], recoveryStats: null }
+      return { hasData: false, stats: null, insights: null, insightTexts: [], streak: 0, norm: null, normProgress: { ratedDays: 0, target: NORM_MIN_DAYS }, workTypeStats: [], recoveryStats: null }
     }
     const stats = computeStats(sessions)
     const insights = computeInsights(sessions)
@@ -115,18 +116,6 @@ export default function Analytics() {
     const recoveryStats = computeRecoveryStats(sessions, norm)
     return { hasData: true, stats, insights, insightTexts, streak, norm, normProgress, workTypeStats, recoveryStats }
   }, [])
-
-  if (!hasData) {
-    return (
-      <div className="analytics-wrap">
-        <div className="analytics-empty">
-          <p className="empty-icon">📊</p>
-          <p className="empty-title">Пока нет данных</p>
-          <p className="empty-hint">Завершите хотя бы одну сессию, чтобы увидеть аналитику.</p>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="analytics-wrap">
@@ -176,6 +165,13 @@ export default function Analytics() {
         </div>
       )}
 
+      {!hasData && (
+        <p className="no-state-hint">
+          Запишите первую сессию, и приложение начнёт искать вашу норму. Чем больше дней с оценкой состояния, тем точнее она будет.
+        </p>
+      )}
+
+      {hasData && (
       <div className="stat-grid">
         <StatCard
           label="Сессий"
@@ -194,6 +190,7 @@ export default function Analytics() {
           <StateBar value={stats.avgState} />
         </div>
       </div>
+      )}
 
       {workTypeStats.length > 0 && (
         <div className="insights-section">
@@ -235,7 +232,7 @@ export default function Analytics() {
         </div>
       )}
 
-      {stats.avgState === null && (
+      {hasData && stats.avgState === null && (
         <p className="no-state-hint">
           Добавьте оценку самочувствия при завершении сессий, чтобы получить персональные инсайты.
         </p>
