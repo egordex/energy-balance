@@ -142,7 +142,7 @@ export default function InfoPage({ scrollTo }) {
             rel="noopener noreferrer"
             className="info-section-link"
           >
-            Приложения для&nbsp;идей, которые хочется сделать реальностью
+            StandApps&nbsp;– приложения под&nbsp;конкретную идею, книгу, концепцию
             <span className="info-link-icon" aria-hidden="true">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
