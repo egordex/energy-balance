@@ -153,7 +153,7 @@ export default function InfoPage({ scrollTo }) {
           </a>
         </h2>
         <div className="info-text">
-          <p>Быстрый запуск приложений под&nbsp;ваш личный проект, концепцию или&nbsp;основную идею из&nbsp;книги</p>
+          <p>Быстрый запуск. Расскажите, что&nbsp;хотите сделать</p>
         </div>
         <a
           href="https://t.me/stndpp"
